@@ -26,10 +26,10 @@ public class Workout {
     private int slots;
 
     @Column(name = "slots_available")
-    private int slots_available;
+    private int slotsAvailable;
 
     @Column(name = "muscle_group")
-    private String muscle_group;
+    private String muscleGroup;
 
     @Column(name = "img")
     private String img;
