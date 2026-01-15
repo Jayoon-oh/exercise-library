@@ -5,6 +5,7 @@ import { Navbar } from './layouts/NavbarAndFooter/Navbar';
 import { Footer } from './layouts/NavbarAndFooter/Footer';
 import { SearchWorkoutsPage } from './layouts/SearchWorkoutsPage/SearchWorkoutsPage';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { ActiveWorkoutPage } from './layouts/ActiveWorkoutPage.tsx/ActiveWorkoutPage';
 
 export const App = () => {
   return (
@@ -20,6 +21,9 @@ export const App = () => {
           </Route>
           <Route path='/search'>
             <SearchWorkoutsPage />
+          </Route>
+          <Route path='/Active/:WorkoutId'>
+            <ActiveWorkoutPage />
           </Route>
         </Switch>
       </div>

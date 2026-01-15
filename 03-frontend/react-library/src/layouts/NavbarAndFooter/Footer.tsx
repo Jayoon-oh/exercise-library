@@ -11,11 +11,11 @@ export const Footer = () => {
                             홈
                         </Link>
                     </li>
-                    <a className='nav-item'>
+                    <li className='nav-item'>
                         <Link to='/search' className='nav-link px-2 text-white'>
                             검색
                         </Link>
-                    </a>
+                    </li>
                 </ul>
             </footer>
         </div>
