@@ -2,6 +2,7 @@ import { ReturnWorkout } from "./ReturnWorkout"
 import { useEffect, useState } from "react"
 import WorkoutModel from "../../../models/WorkoutModel"
 import { SpinnerLoading } from "../../Utils/SpinnerLoadiang";
+import { Link } from "react-router-dom"
 
 export const Carousel = () => {
 
@@ -116,7 +117,7 @@ export const Carousel = () => {
                 </div>
             </div>
             <div className='homepage-carousel-title mt-3'>
-                <a className='btn btn-outline-secondary btn-lg' href="#">더 보기</a>
+                <Link className='btn btn-outline-secondary btn-lg' to='/search'>더 보기</Link>
             </div>
         </div>
     )

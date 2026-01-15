@@ -10,5 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @SpringBootApplication
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
-    Page<Workout> findByTitleContaining(@RequestParam("title") String title, Pageable pegeable);
+    Page<Workout> findByTitleContaining(@RequestParam("title") String title, Pageable pageable);
+
+    Page<Workout> findByMuscleGroup(@RequestParam("muscleGroup") String muscleGroup, Pageable pageable);
 }

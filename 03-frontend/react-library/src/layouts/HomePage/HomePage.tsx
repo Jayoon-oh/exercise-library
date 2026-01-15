@@ -1,12 +1,12 @@
 import { Carousel } from "./components/Carousel"
-import { ExploreTopBooks } from "./components/ExploreTopBook"
+import { ExploreTopWorkouts } from "./components/ExploreTopWorkouts"
 import { Heros } from "./components/Heros"
 import { LibraryServices } from "./components/LibraryServies"
 
 export const HomePage = () => {
     return (
         <>
-            <ExploreTopBooks />
+            <ExploreTopWorkouts />
             <Carousel />
             <Heros />
             <LibraryServices />

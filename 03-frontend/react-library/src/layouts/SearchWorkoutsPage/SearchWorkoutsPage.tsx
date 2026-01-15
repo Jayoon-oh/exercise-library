@@ -15,6 +15,7 @@ export const SearchWorkoutsPage = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
+    const [categorySelection, setCategorySelection] = useState('부위별검색');
 
     useEffect(() => {
         const fetchWorkouts = async () => {
@@ -25,7 +26,8 @@ export const SearchWorkoutsPage = () => {
             if (searchUrl === '') {
                 url = `${baseUrl}?page=${currentPage - 1}&size=${workoutsPerPage}`;
             } else {
-                url = baseUrl + searchUrl;
+                let searchWithPage = searchUrl.replace('<pageNumber>', `${currentPage - 1}`)
+                url = baseUrl + searchWithPage;
             }
 
             const response = await fetch(url);
@@ -82,10 +84,34 @@ export const SearchWorkoutsPage = () => {
     }
 
     const searchHandleChange = () => {
+        setCurrentPage(1);
         if (search === '') {
             setSearchUrl('');
         } else {
-            setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${workoutsPerPage}`)
+            setSearchUrl(`/search/findByTitleContaining?title=${search}&page=<pageNumber>&size=${workoutsPerPage}`)
+        }
+        setCategorySelection('Workout category')
+    }
+
+    const categoryField = (value: string) => {
+        setCurrentPage(1);
+
+        const categoryMap: { [key: string]: string } = {
+            '하체': 'Lower Body',
+            '등': 'Back',
+            '가슴': 'Chest',
+            '어깨': 'Shoulder',
+            '팔': 'Arm'
+        };
+
+        const dbValue = categoryMap[value];
+
+        if (dbValue) {
+            setCategorySelection(value);
+            setSearchUrl(`/search/findByMuscleGroup?muscleGroup=${encodeURIComponent(dbValue)}&page=<pageNumber>&size=${workoutsPerPage}`)
+        } else {
+            setCategorySelection('모두');
+            setSearchUrl(`?page=<pageNumber>&size=${workoutsPerPage}`)
         }
     }
 
@@ -116,35 +142,35 @@ export const SearchWorkoutsPage = () => {
                             <div className='dropdown'>
                                 <button className='btn btn-secondary dropdown-toggle' type='button'
                                     id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
-                                    부위별검색
+                                    {categorySelection}
                                 </button>
                                 <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
-                                    <li>
+                                    <li onClick={() => categoryField('모두')}>
                                         <a className='dropdown-item' href='#'>
                                             모두
                                         </a>
                                     </li>
-                                    <li>
+                                    <li onClick={() => categoryField('하체')}>
                                         <a className='dropdown-item' href='#'>
                                             하체
                                         </a>
                                     </li>
-                                    <li>
+                                    <li onClick={() => categoryField('등')}>
                                         <a className='dropdown-item' href='#'>
                                             등
                                         </a>
                                     </li>
-                                    <li>
+                                    <li onClick={() => categoryField('가슴')}>
                                         <a className='dropdown-item' href='#'>
                                             가슴
                                         </a>
                                     </li>
-                                    <li>
+                                    <li onClick={() => categoryField('어깨')}>
                                         <a className='dropdown-item' href='#'>
                                             어깨
                                         </a>
                                     </li>
-                                    <li>
+                                    <li onClick={() => categoryField('팔')}>
                                         <a className='dropdown-item' href='#'>
                                             팔
                                         </a>
@@ -153,15 +179,26 @@ export const SearchWorkoutsPage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='mt-3'>
-                        <h5>결과: ({totalAmountOfWorkouts})</h5>
-                    </div>
-                    <p>
-                        전체 {totalAmountOfWorkouts}개 ({indexOfFirstWorkout + 1}-{lastItem})
-                    </p>
-                    {workouts.map(workout => (
-                        <SearchWorkout workout={workout} key={workout.id} />
-                    ))}
+                    {totalAmountOfWorkouts > 0 ?
+                        <>
+                            <div className='mt-3'>
+                                <h5>결과: ({totalAmountOfWorkouts})</h5>
+                            </div>
+                            <p>
+                                전체 {totalAmountOfWorkouts}개 ({indexOfFirstWorkout + 1}-{lastItem})
+                            </p>
+                            {workouts.map(workout => (
+                                <SearchWorkout workout={workout} key={workout.id} />
+                            ))}
+                        </>
+                        :
+                        <div className='m-5'>
+                            <h3>
+                                찾는 운동이 없으신가요?
+                            </h3>
+                            <a type='button' className='btn main-color btn-md px-4 me-md-2 fw-bold text-white' href='#'>문의하기</a>
+                        </div>
+                    }
                     {totalPages > 1 &&
                         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
                 </div>
