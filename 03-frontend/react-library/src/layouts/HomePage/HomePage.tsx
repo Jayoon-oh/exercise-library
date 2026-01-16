@@ -1,7 +1,7 @@
 import { Carousel } from "./components/Carousel"
 import { ExploreTopWorkouts } from "./components/ExploreTopWorkouts"
 import { Heros } from "./components/Heros"
-import { LibraryServices } from "./components/LibraryServies"
+import { WorkoutServices } from "./components/WorkoutServies"
 
 export const HomePage = () => {
     return (
@@ -9,7 +9,7 @@ export const HomePage = () => {
             <ExploreTopWorkouts />
             <Carousel />
             <Heros />
-            <LibraryServices />
+            <WorkoutServices />
         </>
     )
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import WorkoutModel from '../../../models/WorkoutModel'
+import { Link } from 'react-router-dom';
 
 export const ReturnWorkout: React.FC<{ workout: WorkoutModel }> = (props) => {
 
@@ -37,7 +38,7 @@ export const ReturnWorkout: React.FC<{ workout: WorkoutModel }> = (props) => {
 
                 <h6 className='mt-2'>{props.workout.title}</h6>
                 <p>{props.workout.source}</p>
-                <a className='btn main-color text-white' href='#'>운동 추가하기</a>
+                <Link className='btn main-color text-white' to={`active/${props.workout.id}`}>운동 추가하기</Link>
             </div>
         </div>
     )

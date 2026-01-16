@@ -9,7 +9,7 @@ export const ExploreTopWorkouts = () => {
                     <h1 className='display-5 fw-bold'>나만의 스마트한 운동 일지, Gym Rat</h1>
                     <p className='col-md-8 fs-4'>당신의 성장을 기록하고 변화를 확인하세요.</p>
                     <Link type='button' className='btn main-color btn-lg text-white' to='/search'>
-                        둘러보기
+                        운동찾기
                     </Link>
                 </div>
             </div>

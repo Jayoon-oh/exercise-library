@@ -22,7 +22,7 @@ export const Heros = () => {
                             </p>
                             {isAuthenticated ?
                                 <Link type='button' className='btn main-color btn-lg text-white'
-                                    to='search'>다양한 운동 확인하기 </Link>
+                                    to='search'>운동찾기 </Link>
                                 :
                                 <Link className='btn main-color btn-lg text-white' to='/login'>회원가입</Link>
                             }
