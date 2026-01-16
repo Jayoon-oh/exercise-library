@@ -22,7 +22,10 @@
 }
 
 .col-image-left {
-    background-image: url("./Images/PublicImages/image-1.png");
+    background-image: url("./Images/PublicImages/image-1.jpg");
+    background-size: cover;
+    background-position: bottom;
+    filter: grayscale(50%);
     height: 25em !important;
 }
 

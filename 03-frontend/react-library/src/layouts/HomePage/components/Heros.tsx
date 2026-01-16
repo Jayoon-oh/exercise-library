@@ -1,4 +1,10 @@
+import { useAuth0 } from "@auth0/auth0-react"
+import { Link } from "react-router-dom"
+
 export const Heros = () => {
+
+    const { isAuthenticated } = useAuth0();
+
     return (
         <div>
             <div className='d-none d-lg-block'>
@@ -8,13 +14,18 @@ export const Heros = () => {
                     </div>
                     <div className='col-4 col-md-4 container d-flex justify-content-center align-items-center'>
                         <div className='ml-2'>
-                            <h1>어떤 운동에 집중하고 계신가요?</h1>
+                            <h1>최근 어떤 운동에 집중하고 계신가요?</h1>
                             <p className='lead'>
                                 Gym Rat 팀은 여러분의 운동 기록이 궁금합니다.
                                 새로운 종목과 기존 루틴을 마스터하는 과정을 기록해 보세요.
                                 여러분에게 딱 맞는 최고의 운동 콘텐츠를 추천해 드립니다!
                             </p>
-                            <a className='btn main-color btn-lg text-white' href='#'>회원가입</a>
+                            {isAuthenticated ?
+                                <Link type='button' className='btn main-color btn-lg text-white'
+                                    to='search'>다양한 운동 확인하기 </Link>
+                                :
+                                <Link className='btn main-color btn-lg text-white' to='/login'>회원가입</Link>
+                            }
                         </div>
                     </div>
                 </div>
@@ -35,6 +46,7 @@ export const Heros = () => {
                     </div>
                 </div>
             </div>
+
             {/* Mobile Heros */}
             <div className='d-lg-none'>
                 <div className='container'>
@@ -48,7 +60,12 @@ export const Heros = () => {
                                 기존 루틴을 마스터하는 과정이든 기록해 보세요.
                                 여러분에게 딱 맞는 최고의 운동 콘텐츠를 추천해 드립니다!
                             </p>
-                            <a className='btn main-color btn-lg text-white' href='#'>회원가입</a>
+                            {isAuthenticated ?
+                                <Link type='button' className='btn main-color btn-lg text-white'
+                                    to='search'>운동찾기</Link>
+                                :
+                                <Link className='btn main-color btn-lg text-white' to='/login'>회원가입</Link>
+                            }
                         </div>
                     </div>
                     <div className='m-2'>

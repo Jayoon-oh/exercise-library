@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import WorkoutModel from "../../models/WorkoutModel";
-import { SpinnerLoading } from "../Utils/SpinnerLoadiang";
+import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { SearchWorkout } from "./components/SearchWorkout";
 import { Pagination } from "../Utils/Pagination";
 

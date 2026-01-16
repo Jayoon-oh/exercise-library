@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import WorkoutModel from "../../models/WorkoutModel";
-import { SpinnerLoading } from "../Utils/SpinnerLoadiang";
+import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarsReview } from "../Utils/StarsReview";
 import { ActivePageReviewBox } from "../ActivePageReviewBox";
 import ReviewModel from "../../models/ReviewModel";
