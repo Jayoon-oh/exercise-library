@@ -45,4 +45,18 @@ public class WorkoutService {
 
         return workout.get();
     }
-}
+
+    public Boolean activeWorkoutByUser(String userEmail, Long workoutId) {
+        ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
+        if (validateActive != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+        public int currentActivesCount(String userEmail) {
+            return activeRoutineRepository.findWorkoutsByUserEmail(userEmail).size();
+        }
+    }
+
