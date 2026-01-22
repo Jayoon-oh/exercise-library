@@ -2,11 +2,12 @@ import { useDeferredValue, useEffect, useState } from "react";
 import WorkoutModel from "../../models/WorkoutModel";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarsReview } from "../Utils/StarsReview";
-import { ActivePageReviewBox } from "../ActivePageReviewBox";
+import { ActivePageReviewBox } from "./ActivePageReviewBox";
 import ReviewModel from "../../models/ReviewModel";
 import { LatestReviews } from "./LatestReviews";
 import { auth0Config } from "../../lib/auth0Config";
 import { useAuth0 } from "@auth0/auth0-react";
+import ReviewRequestModel from "../../models/ReviewRequestModel";
 
 export const ActiveWorkoutPage = () => {
 
@@ -65,7 +66,7 @@ export const ActiveWorkoutPage = () => {
             setIsLoading(false);
             setHttpError(error.message);
         })
-    }, [isActivated]);
+    }, [isActivated, getAccessTokenSilently, workoutId]);
 
     useEffect(() => {
         const fetchWorkReviews = async () => {
@@ -113,6 +114,34 @@ export const ActiveWorkoutPage = () => {
     }, [isReviewLeft, workoutId]);
 
     useEffect(() => {
+        const fetchUserReviewWorkout = async () => {
+            if (isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/reviews/secure/user/workout?workoutId=${workoutId}`;
+
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                };
+                const userReview = await fetch(url, requestOptions);
+                if (!userReview.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const userReviewResponseJson = await userReview.json();
+                setIsReviewLeft(userReviewResponseJson);
+            }
+            setIsLoadingUserReview(false);
+        }
+        fetchUserReviewWorkout().catch((error: any) => {
+            setIsLoadingUserReview(false);
+            setHttpError(error.message);
+        })
+    }, [workoutId, isAuthenticated, getAccessTokenSilently]);
+
+    useEffect(() => {
         const fetchUserCurrentActivitiesCount = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
@@ -153,12 +182,12 @@ export const ActiveWorkoutPage = () => {
                         'Content-type': 'Application/json'
                     }
                 };
-                const userReview = await fetch(url, requestOptions);
-                if (!userReview.ok) {
+                const workoutActivataed = await fetch(url, requestOptions);
+                if (!workoutActivataed.ok) {
                     throw new Error('Something went wrong');
                 }
-                const userReviewResponseJson = await userReview.json();
-                setIsReviewLeft(userReviewResponseJson);
+                const workoutActivatedResponseJson = await workoutActivataed.json();
+                setIsReviewLeft(workoutActivatedResponseJson);
             }
             setIsLoadingUserReview(false);
         }
@@ -184,6 +213,30 @@ export const ActiveWorkoutPage = () => {
             throw new Error('Something went wrong!');
         }
         setIsActivated(true);
+    }
+
+    async function submitReview(starInput: number, reviewDescription: string) {
+        let workoutId: number = 0;
+        if (workout?.id) {
+            workoutId = workout.id;
+        }
+
+        const reviewRequestModel = new ReviewRequestModel(starInput, workoutId, reviewDescription);
+        const url = `http://localhost:8080/api/reviews/secure`;
+        const accessToken = await getAccessTokenSilently();
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewRequestModel)
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        if (!returnResponse.ok) {
+            throw new Error('Something went wrong!');
+        }
+        setIsReviewLeft(true);
     }
 
 
@@ -229,7 +282,7 @@ export const ActiveWorkoutPage = () => {
                             <StarsReview rating={totalStars} size={32} />
                         </div>
                     </div>
-                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} />
+                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} />
                 </div>
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} />
@@ -248,7 +301,7 @@ export const ActiveWorkoutPage = () => {
                         <StarsReview rating={totalStars} size={32} />
                     </div>
                 </div>
-                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} />
+                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} />
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} />
             </div>

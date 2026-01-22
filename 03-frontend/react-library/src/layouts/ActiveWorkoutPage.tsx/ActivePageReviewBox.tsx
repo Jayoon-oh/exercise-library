@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
-import WorkoutModel from "../models/WorkoutModel"
+import WorkoutModel from "../../models/WorkoutModel"
+import { StarsReview } from "../Utils/StarsReview"
+import { LeaveAReview } from "../Utils/LeaveAReview"
 
-export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean }> = (props) => {
+export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any }> = (props) => {
     function buttonRender() {
         if (props.isAuthenticated) {
             if (!props.isActivated && props.currentActivitiesCount < 5) {
@@ -14,6 +16,33 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
         }
         return (<Link to={'/login'} className="btn btn-success btn-lg">로그인</Link>)
     }
+
+    function reviewRender() {
+        if (props.isAuthenticated && !props.isReviewLeft) {
+            return (
+                <p>
+                    다른 회원님들을 위해 리뷰를 남겨주세요!
+                </p>
+            )
+        } else if (props.isAuthenticated && props.isReviewLeft) {
+            return (
+                <div>
+                    <LeaveAReview submitReview={props.submitReview} />
+                </div>
+            )
+        } else if (props.isAuthenticated && props.submitReview) {
+            return (
+                <div>
+                    <b>리뷰를 남겨주셔서 감사합니다!</b>
+                </div>
+            )
+        }
+        return (<div>
+            <hr />
+            <p>리뷰를 남기시려면 로그인 해주세요</p>
+        </div>)
+    }
+
     return (
         <div className={props.mobile ? 'card d-flex mt-5' : 'card col-3 container d-flex mb-5'}>
             <div className='card-body container'>
@@ -47,9 +76,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
                 <p className='mt-3'>
                     ※ 위 가이드는 일반적인 기준입니다.
                 </p>
-                <p>
-                    로그인 후 나만의 운동 팁을 기록해보세요!
-                </p>
+                {reviewRender()}
             </div>
         </div>
     );
