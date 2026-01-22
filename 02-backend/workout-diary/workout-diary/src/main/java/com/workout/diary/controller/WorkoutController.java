@@ -22,21 +22,21 @@ public class WorkoutController {
 
     @GetMapping("/secure/currentActives/count")
     public int currentActivesCount(@AuthenticationPrincipal Jwt jwt) {
-        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
         return workoutService.currentActivesCount(userEmail);
     }
 
     @GetMapping("/secure/isActivated/byuser")
     public boolean activeWorkoutByUser(@AuthenticationPrincipal Jwt jwt,
             @RequestParam Long workoutId) {
-        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
         return workoutService.activeWorkoutByUser(userEmail, workoutId);
     }
 
     @PutMapping("/secure/active")
     public Workout activeWorkout (@AuthenticationPrincipal Jwt jwt,
             @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
         return workoutService.activeWorkout(userEmail, workoutId);
     }
 }

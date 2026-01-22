@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import WorkoutModel from "../../models/WorkoutModel";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarsReview } from "../Utils/StarsReview";
 import { ActivePageReviewBox } from "../ActivePageReviewBox";
 import ReviewModel from "../../models/ReviewModel";
 import { LatestReviews } from "./LatestReviews";
+import { auth0Config } from "../../lib/auth0Config";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const ActiveWorkoutPage = () => {
+
+    // Auth0 인증
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     const [workout, setWorkout] = useState<WorkoutModel>();
     const [isLoading, setIsLoading] = useState(true);
@@ -16,6 +21,17 @@ export const ActiveWorkoutPage = () => {
     const [reviews, setReviews] = useState<ReviewModel[]>([])
     const [totalStars, setTotalStars] = useState(0);
     const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+    const [isReviewLeft, setIsReviewLeft] = useState(false);
+    const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
+
+    // Activites Count State
+    const [currentActivitiesCount, setCurrentActivitiesCount] = useState(0);
+    const [isLoadingCurrentActivitiesCount, setIsLoadingCurrentActivitiesCount] = useState(true);
+
+    // Is workout Activated?
+    const [isActivated, setIsActivated] = useState(false);
+    const [isLoadingWorkoutActivated, setIsLoadingWorkoutActivated] = useState(false);
 
     const workoutId = (window.location.pathname).split('/')[2];
 
@@ -49,7 +65,7 @@ export const ActiveWorkoutPage = () => {
             setIsLoading(false);
             setHttpError(error.message);
         })
-    }, []);
+    }, [isActivated]);
 
     useEffect(() => {
         const fetchWorkReviews = async () => {
@@ -94,9 +110,84 @@ export const ActiveWorkoutPage = () => {
             setIsLoadingReview(false);
             setHttpError(error.message);
         })
-    }, []);
+    }, [isReviewLeft, workoutId]);
 
-    if (isLoading || isLoadingReview) {
+    useEffect(() => {
+        const fetchUserCurrentActivitiesCount = async () => {
+            if (isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/workouts/secure/currentActives/count`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-type': 'application/json'
+                    }
+                };
+                const currentActivitiesCountResponse = await fetch(url, requestOptions);
+                if (!currentActivitiesCountResponse.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const currentActivitiesCountResponseJson = await currentActivitiesCountResponse.json();
+                setCurrentActivitiesCount(currentActivitiesCountResponseJson);
+            }
+            setIsLoadingCurrentActivitiesCount(false);
+        }
+        fetchUserCurrentActivitiesCount().catch((error: any) => {
+            setIsLoadingCurrentActivitiesCount(false);
+            setHttpError(error.message);
+        })
+
+    }, [isAuthenticated, getAccessTokenSilently, isActivated]);
+
+    useEffect(() => {
+        const fetchUserActivatedWorkout = async () => {
+            if (isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/workouts/secure/isActivated/byuser?workoutId=${workoutId}`
+
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-type': 'Application/json'
+                    }
+                };
+                const userReview = await fetch(url, requestOptions);
+                if (!userReview.ok) {
+                    throw new Error('Something went wrong');
+                }
+                const userReviewResponseJson = await userReview.json();
+                setIsReviewLeft(userReviewResponseJson);
+            }
+            setIsLoadingUserReview(false);
+        }
+        fetchUserActivatedWorkout().catch((error: any) => {
+            setIsLoadingUserReview(false);
+            setHttpError(error.message);
+        })
+    }, [workoutId, isAuthenticated, getAccessTokenSilently]);
+
+    async function activeWorkout() {
+        const accessToken = await getAccessTokenSilently();
+        const url = `http://localhost:8080/api/workouts/secure/active?workoutId=${workoutId}`;
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const activeResposne = await fetch(url, requestOptions);
+        if (!activeResposne.ok) {
+            throw new Error('Something went wrong!');
+        }
+        setIsActivated(true);
+    }
+
+
+    if (isLoading || isLoadingReview || isLoadingCurrentActivitiesCount || isLoadingWorkoutActivated || isLoadingUserReview) {
         return (
             <SpinnerLoading />
         )
@@ -138,7 +229,7 @@ export const ActiveWorkoutPage = () => {
                             <StarsReview rating={totalStars} size={32} />
                         </div>
                     </div>
-                    <ActivePageReviewBox workout={workout} mobile={false} />
+                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} />
                 </div>
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} />
@@ -157,7 +248,7 @@ export const ActiveWorkoutPage = () => {
                         <StarsReview rating={totalStars} size={32} />
                     </div>
                 </div>
-                <ActivePageReviewBox workout={workout} mobile={true} />
+                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} />
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} />
             </div>
