@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "workout_review")
 @Data
@@ -19,7 +21,7 @@ public class Review {
 
     @Column(name = "date")
     @CreationTimestamp
-    private String date;
+    private Date date;
 
     @Column(name = "rating")
     private double rating;
