@@ -5,7 +5,7 @@ import { Navbar } from './layouts/NavbarAndFooter/Navbar';
 import { Footer } from './layouts/NavbarAndFooter/Footer';
 import { SearchWorkoutsPage } from './layouts/SearchWorkoutsPage/SearchWorkoutsPage';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import { ActiveWorkoutPage } from './layouts/ActiveWorkoutPage.tsx/ActiveWorkoutPage';
+import { ActiveWorkoutPage } from './layouts/ActiveWorkoutPage/ActiveWorkoutPage';
 
 import { auth0Config } from './lib/auth0Config';
 import LoginPage from './Auth/LoginPage';
@@ -64,7 +64,7 @@ export const App = () => {
             <Route path='/reviewlist/:workoutId'>
               <ReviewListPage />
             </Route>
-            <Route path='/Active/:WorkoutId'>
+            <Route path='/active/:workoutId'>
               <ActiveWorkoutPage />
             </Route>
             <Route path='/login' render={() => <LoginPage />} />

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import ReviewModel from "../../../models/ReviewModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
+import { Review } from "../../Utils/Review";
+import { Pagination } from "../../Utils/Pagination";
+import { useParams } from "react-router-dom";
 
 export const ReviewListPage = () => {
     const [reviews, setReviews] = useState<ReviewModel[]>([]);
@@ -9,14 +12,17 @@ export const ReviewListPage = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const [reviewsPerPage] = useState(0);
+    const [reviewsPerPage] = useState(5);
     const [totalAmountOfReviews, setTotalAmountOfReviews] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
-    const workoutId = (window.location.pathname).split('/')[2];
+    const { workoutId } = useParams<{ workoutId: string }>();
+
+    console.log("추출된 ID 확인:", workoutId); // 이제 콘솔에 "reviewlist"가 아닌 숫자가 뜰 거예요!
 
     useEffect(() => {
         const fetchWorkReviews = async () => {
+
             const reviewUrl: string = `http://localhost:8080/api/reviews/search/findByWorkoutId?workoutId=${workoutId}&page=${currentPage - 1}&size=${reviewsPerPage}`;
 
             const responseReviews = await fetch(reviewUrl);
@@ -82,7 +88,7 @@ export const ReviewListPage = () => {
                 <h3>댓글: ({reviews.length})</h3>
             </div>
             <p>
-                전체: {totalAmountOfReviews} {indexOfFirstReview + 1} 부터 {lastItem} of
+                전체 {totalAmountOfReviews} 중 {indexOfFirstReview + 1}~{lastItem}
             </p>
             <div className="row">
                 {reviews.map(review => (
@@ -90,7 +96,7 @@ export const ReviewListPage = () => {
                 ))}
             </div>
 
-            {totalPages > 1 && <Pagiation currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
+            {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
         </div>
     )
 }

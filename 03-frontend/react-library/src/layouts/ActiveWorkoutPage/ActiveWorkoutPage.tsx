@@ -8,8 +8,11 @@ import { LatestReviews } from "./LatestReviews";
 import { auth0Config } from "../../lib/auth0Config";
 import { useAuth0 } from "@auth0/auth0-react";
 import ReviewRequestModel from "../../models/ReviewRequestModel";
+import { useParams } from "react-router-dom";
 
 export const ActiveWorkoutPage = () => {
+
+    const { workoutId } = useParams<{ workoutId: string }>();
 
     // Auth0 인증
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -33,8 +36,6 @@ export const ActiveWorkoutPage = () => {
     // Is workout Activated?
     const [isActivated, setIsActivated] = useState(false);
     const [isLoadingWorkoutActivated, setIsLoadingWorkoutActivated] = useState(false);
-
-    const workoutId = (window.location.pathname).split('/')[2];
 
     useEffect(() => {
         const fetchWorkout = async () => {

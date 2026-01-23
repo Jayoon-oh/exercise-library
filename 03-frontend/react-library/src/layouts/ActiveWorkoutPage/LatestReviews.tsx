@@ -20,7 +20,7 @@ export const LatestReviews: React.FC<{
 
                         <div className='m-3'>
                             <Link type='button' className='btn main-color btn-md text-white'
-                                to={`reviewlist/${props.workoutId}`}>
+                                to={`/reviewlist/${props.workoutId}`}>
                                 전체 후기보기.
                             </Link>
                         </div>
