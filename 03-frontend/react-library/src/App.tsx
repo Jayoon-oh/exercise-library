@@ -10,6 +10,7 @@ import { ActiveWorkoutPage } from './layouts/ActiveWorkoutPage.tsx/ActiveWorkout
 import { auth0Config } from './lib/auth0Config';
 import LoginPage from './Auth/LoginPage';
 import { Auth0Provider, withAuthenticationRequired } from '@auth0/auth0-react';
+import { ReviewListPage } from './layouts/ActiveWorkoutPage/ReviewListPage/ReviewListPage';
 
 /**
  * Auth0 인증 상태를 관리하는 커스텀 Provider 컴포넌트.
@@ -60,9 +61,9 @@ export const App = () => {
             <Route path='/search'>
               <SearchWorkoutsPage />
             </Route>
-            {/* <Route path='/reviewlist/:workoutId'>
-              <ReviewListPage/>
-            </Route> */}
+            <Route path='/reviewlist/:workoutId'>
+              <ReviewListPage />
+            </Route>
             <Route path='/Active/:WorkoutId'>
               <ActiveWorkoutPage />
             </Route>

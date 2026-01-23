@@ -93,7 +93,7 @@ export const ActiveWorkoutPage = () => {
                     date: responseData[key].date,
                     rating: responseData[key].rating,
                     workoutId: responseData[key].workoutId,
-                    reviewDescription: responseData[key].description
+                    reviewDescription: responseData[key].reviewDescription
                 });
                 weightedStarReviews = weightedStarReviews + responseData[key].rating;
             }

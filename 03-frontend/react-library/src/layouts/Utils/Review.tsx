@@ -2,6 +2,7 @@ import ReviewModel from "../../models/ReviewModel"
 import { StarsReview } from "./StarsReview";
 
 export const Review: React.FC<{ review: ReviewModel }> = (props) => {
+    console.log("Review Data:", props.review);
 
     const date = new Date(props.review.date);
 

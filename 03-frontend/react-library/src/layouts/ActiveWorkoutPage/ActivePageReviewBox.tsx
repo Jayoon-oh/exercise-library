@@ -20,27 +20,23 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
     function reviewRender() {
         if (props.isAuthenticated && !props.isReviewLeft) {
             return (
-                <p>
-                    다른 회원님들을 위해 리뷰를 남겨주세요!
-                </p>
-            )
-        } else if (props.isAuthenticated && props.isReviewLeft) {
-            return (
                 <div>
                     <LeaveAReview submitReview={props.submitReview} />
                 </div>
             )
-        } else if (props.isAuthenticated && props.submitReview) {
+        } else if (props.isAuthenticated && props.isReviewLeft) {
             return (
                 <div>
                     <b>리뷰를 남겨주셔서 감사합니다!</b>
                 </div>
             )
         }
-        return (<div>
-            <hr />
-            <p>리뷰를 남기시려면 로그인 해주세요</p>
-        </div>)
+        return (
+            <div>
+                <hr />
+                <p>리뷰를 남기시려면 로그인 해주세요</p>
+            </div>
+        )
     }
 
     return (
@@ -48,7 +44,8 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
             <div className='card-body container'>
                 <div className='mt-3'>
                     <p>
-                        <b>{props.currentActivitiesCount}</b>
+                        활성화된 운동
+                        <b> {props.currentActivitiesCount}/5 </b>
                     </p>
                     <hr />
                     {props.workout && props.workout.slotsAvailable && props.workout.slotsAvailable > 0 ?
