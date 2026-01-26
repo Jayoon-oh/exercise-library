@@ -4,6 +4,7 @@ import ShelfCurrentActivities from '../../../models/ShelfCurrentActivities';
 import { SpinnerLoading } from '../../Utils/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { ActivitiesModal } from './ActivitiesModal';
+import { isFunctionTypeNode } from 'typescript';
 
 export const Activies = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -44,6 +45,41 @@ export const Activies = () => {
     if (isLoadingUserActivities) return <SpinnerLoading />;
     if (httpError) return <div className='container m-5'><p>{httpError}</p></div>;
 
+    async function cancelWorkout(workoutId: number) {
+        const url = `http://localhost:8080/api/workouts/secure/cancel?workoutId=${workoutId}`;
+        const accessToken = await getAccessTokenSilently();
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-type': 'application/json'
+            }
+        };
+        const cancelResponse = await fetch(url, requestOptions);
+        if (!cancelResponse.ok) {
+            throw new Error("Something went wrong");
+        }
+        setActivate(!activate);
+    }
+
+    async function extendDays(workoutId: number) {
+        const url = `http://localhost:8080/api/workouts/secure/extend/days?workoutId=${workoutId}`;
+        const accessToken = await getAccessTokenSilently();
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const renewResponse = await fetch(url, requestOptions);
+        if (!renewResponse.ok) {
+            throw new Error('Something went wrong!');
+        }
+        setActivate(!activate);
+    }
+
     // 이미지 경로 처리 함수
     const getWorkoutImage = (imgName?: string) => {
         try {
@@ -72,22 +108,22 @@ export const Activies = () => {
                                     <div className='card col-3 col-md-3 container d-flex'>
                                         <div className='card-body'>
                                             <div className='mt-3'>
-                                                <h4>Options</h4>
+                                                <h5>⏳ 관리</h5>
                                                 {shelfCurrentActivity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {shelfCurrentActivity.daysLeft}일</p>}
                                                 {shelfCurrentActivity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
                                                 {shelfCurrentActivity.daysLeft < 0 && <p className='text-secondary'>새로운 운동을 추가하세요!</p>}
 
                                                 <div className='list-group mt-3'>
                                                     <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#modal${shelfCurrentActivity.workout.id}`}>
-                                                        운동리스트 관리하기
+                                                        상세설정
                                                     </button>
                                                     <Link to={'search'} className='list-group-item list-group-item-action'>
-                                                        더 많은 운동 찾아보기
+                                                        다른 운동 찾기
                                                     </Link>
                                                 </div>
                                             </div>
                                             <hr />
-                                            <p className='mt-3'>후기를 적어서 다른 회원들에게 도움을 주세요!</p>
+                                            <p className='mt-3'>소중한 후기를 적어서 다른 회원들에게 도움을 주세요!</p>
                                             <Link className='btn btn-primary' to={`/checkout/${shelfCurrentActivity.workout.id}`}>
                                                 리뷰작성
                                             </Link>
@@ -95,7 +131,7 @@ export const Activies = () => {
                                     </div>
                                 </div>
                                 <hr />
-                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={false} />
+                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={false} cancelWorkout={cancelWorkout} extendDays={extendDays} />
                             </div>
                         ))}
                     </>
@@ -121,21 +157,21 @@ export const Activies = () => {
                                     <div className='card d-flex mt-5 mb-3'>
                                         <div className='card-body container'>
                                             <div className='mt-3'>
-                                                <h4>Options</h4>
+                                                <h4>⏳ 관리</h4>
                                                 {shelfCurrentActivity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {shelfCurrentActivity.daysLeft}일</p>}
                                                 {shelfCurrentActivity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
 
                                                 <div className='list-group mt-3'>
                                                     <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#mobilemodal${shelfCurrentActivity.workout.id}`}>
-                                                        운동리스트 관리하기
+                                                        상세설정
                                                     </button>
                                                     <Link to={'search'} className='list-group-item list-group-item-action'>
-                                                        더 많은 운동 찾아보기
+                                                        다른 운동 찾기
                                                     </Link>
                                                 </div>
                                             </div>
                                             <hr />
-                                            <p className='mt-3'>후기를 적어서 다른 회원들에게 도움을 주세요!</p>
+                                            <p className='mt-3'>소중한 후기를 적어서 다른 회원들에게 도움을 주세요!</p>
                                             <Link className='btn btn-primary' to={`/checkout/${shelfCurrentActivity.workout.id}`}>
                                                 리뷰작성
                                             </Link>
@@ -143,7 +179,7 @@ export const Activies = () => {
                                     </div>
                                 </div>
                                 <hr />
-                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={true} />
+                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={true} cancelWorkout={cancelWorkout} extendDays={extendDays} />
                             </div>
                         ))}
                     </>

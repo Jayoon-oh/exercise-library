@@ -1,7 +1,7 @@
 import ShelfCurrentActivities from "../../../models/ShelfCurrentActivities"
 import WorkoutModel from "../../../models/WorkoutModel"
 
-export const ActivitiesModal: React.FC<{ shelfCurrentActivity: ShelfCurrentActivities, mobile: boolean }> = (props) => {
+export const ActivitiesModal: React.FC<{ shelfCurrentActivity: ShelfCurrentActivities, mobile: boolean, cancelWorkout: any, extendDays: any }> = (props) => {
 
     // 이미지 경로 처리 함수
     const getWorkoutImage = (imgName?: string) => {
@@ -46,14 +46,21 @@ export const ActivitiesModal: React.FC<{ shelfCurrentActivity: ShelfCurrentActiv
                                 {props.shelfCurrentActivity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
                                 {props.shelfCurrentActivity.daysLeft < 0 && <p className='text-secondary'>새로운 운동을 추가하세요!</p>}
                                 <div className="list-group mt-3">
-                                    <button data-bs-toggle='modal' className="list-group-item list-group-item-action"
+                                    <button onClick={() => props.cancelWorkout(props.shelfCurrentActivity.workout.id)}
+                                        data-bs-dismiss='modal' className="list-group-item list-group-item-action"
                                         aria-current='true'>
                                         목록에서 삭제
                                     </button>
-                                    <button data-bs-dismiss='modal' className={props.shelfCurrentActivity.daysLeft < 0 ?
-                                        "list-group-item list-group-item-action inactiveLink" :
-                                        "list-group-item list-group-item-action"
-                                    }>
+                                    <button onClick={props.shelfCurrentActivity.daysLeft < 0 ?
+                                        (event) => event.preventDefault()
+                                        :
+                                        () => props.extendDays(props.shelfCurrentActivity.workout.id)
+                                    }
+                                        data-bs-dismiss='modal'
+                                        className={props.shelfCurrentActivity.daysLeft < 0 ?
+                                            "list-group-item list-group-item-action inactiveLink" :
+                                            "list-group-item list-group-item-action"
+                                        }>
                                         {props.shelfCurrentActivity.daysLeft < 0 ?
                                             '기간이 만료된 운동은 달성목록에 추가할 수 없습니다.' : '7일 연장하기'
                                         }

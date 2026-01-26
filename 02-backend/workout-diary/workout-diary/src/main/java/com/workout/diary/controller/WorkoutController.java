@@ -5,6 +5,7 @@ import com.workout.diary.entity.Workout;
 import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -48,5 +49,19 @@ public class WorkoutController {
             @RequestParam Long workoutId) throws Exception {
         String userEmail = jwt.getClaim("http://exercise-library.com/email");
         return workoutService.activeWorkout(userEmail, workoutId);
+    }
+
+    @PutMapping("/secure/cancel")
+    public void cancelWorkout(@AuthenticationPrincipal Jwt jwt,
+                              @RequestParam Long workoutId) throws Exception {
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        workoutService.cancelWorkout(userEmail, workoutId);
+    }
+
+    @PutMapping("/secure/extend/days")
+    public void extendDays(@AuthenticationPrincipal Jwt jwt,
+                           @RequestParam Long workoutId) throws Exception {
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        workoutService.extendDays(userEmail, workoutId);
     }
 }
