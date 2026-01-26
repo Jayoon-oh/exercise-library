@@ -11,6 +11,9 @@ import { auth0Config } from './lib/auth0Config';
 import LoginPage from './Auth/LoginPage';
 import { Auth0Provider, withAuthenticationRequired } from '@auth0/auth0-react';
 import { ReviewListPage } from './layouts/ActiveWorkoutPage/ReviewListPage/ReviewListPage';
+import { ShelfPage } from './layouts/ShelfPage/ShelfPage';
+
+
 
 /**
  * Auth0 인증 상태를 관리하는 커스텀 Provider 컴포넌트.
@@ -68,8 +71,8 @@ export const App = () => {
               <ActiveWorkoutPage />
             </Route>
             <Route path='/login' render={() => <LoginPage />} />
-            {/* <SecureRoute path='/shelf' component={ShelfPage}/>
-            <SecureRoute path='/messages' component={MessagesPage}/>
+            <SecureRoute path='/shelf' component={ShelfPage} />
+            {/* <SecureRoute path='/messages' component={MessagesPage}/>
             <SecureRoute path='/admin' component={ManageLibraryPage}/> */}
           </Switch>
         </div>

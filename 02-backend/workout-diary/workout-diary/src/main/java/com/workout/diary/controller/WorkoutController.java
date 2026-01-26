@@ -2,11 +2,14 @@ package com.workout.diary.controller;
 
 
 import com.workout.diary.entity.Workout;
+import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -18,6 +21,13 @@ public class WorkoutController {
     @Autowired
     public WorkoutController(WorkoutService workoutService) {
         this.workoutService = workoutService;
+    }
+
+    @GetMapping("/secure/currentActives")
+    public List<ShelfCurrentActivitiesResponse> currentActivities(@AuthenticationPrincipal Jwt jwt)
+        throws Exception {
+        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        return workoutService.currentLoans(userEmail);
     }
 
     @GetMapping("/secure/currentActives/count")

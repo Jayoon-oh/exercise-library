@@ -1,0 +1,156 @@
+import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
+import ShelfCurrentActivities from '../../../models/ShelfCurrentActivities';
+import { SpinnerLoading } from '../../Utils/SpinnerLoading';
+import { Link } from 'react-router-dom';
+
+export const Activies = () => {
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const [httpError, setHttpError] = useState(null);
+
+    const [shelfCurrentActivities, setShelfCurrentActivities] = useState<ShelfCurrentActivities[]>([]);
+    const [isLoadingUserActivities, setIsLoadingUserActivies] = useState(true);
+    const [activate, setActivate] = useState(false);
+
+    useEffect(() => {
+        const fetchUserCurrentActivities = async () => {
+            if (isAuthenticated) {
+                const accessToken = await getAccessTokenSilently();
+                const url = `http://localhost:8080/api/workouts/secure/currentActives`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                };
+                const shelfCurrentActivitiesResponse = await fetch(url, requestOptions);
+                if (!shelfCurrentActivitiesResponse.ok) {
+                    throw new Error("Something went wrong!");
+                }
+                const shelfCurrentActivitiesResponseJson = await shelfCurrentActivitiesResponse.json();
+                setShelfCurrentActivities(shelfCurrentActivitiesResponseJson);
+            }
+            setIsLoadingUserActivies(false);
+        }
+        fetchUserCurrentActivities().catch((error: any) => {
+            setIsLoadingUserActivies(false);
+            setHttpError(error.message);
+        })
+        window.scrollTo(0, 0);
+    }, [isAuthenticated, getAccessTokenSilently, activate])
+
+    if (isLoadingUserActivities) return <SpinnerLoading />;
+    if (httpError) return <div className='container m-5'><p>{httpError}</p></div>;
+
+    // 이미지 경로 처리 함수
+    const getWorkoutImage = (imgName?: string) => {
+        try {
+            if (imgName) {
+                return require(`./../../../Images/ExerciseImages/${imgName}`);
+            }
+        } catch (error) {
+            // 이미지 로드 실패 시 기본 이미지
+        }
+        return require('./../../../Images/ExerciseImages/barbellrow.jpg');
+    };
+
+    return (
+        <div className='container'>
+            {/* --- Desktop 화면 (Lg 이상) --- */}
+            <div className='d-none d-lg-block mt-2'>
+                {shelfCurrentActivities.length > 0 ? (
+                    <>
+                        <h5>운동 리스트:</h5>
+                        {shelfCurrentActivities.map(activity => (
+                            <div key={activity.workout.id}>
+                                <div className='row mt-3 mb-3'>
+                                    <div className='col-4 col-md-4 container'>
+                                        <img src={getWorkoutImage(activity.workout.img)} width='226' height='349' alt='Workout' />
+                                    </div>
+                                    <div className='card col-3 col-md-3 container d-flex'>
+                                        <div className='card-body'>
+                                            <div className='mt-3'>
+                                                <h4>Options</h4>
+                                                {activity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {activity.daysLeft}일</p>}
+                                                {activity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
+                                                {activity.daysLeft < 0 && <p className='text-secondary'>새로운 운동을 추가하세요!</p>}
+
+                                                <div className='list-group mt-3'>
+                                                    <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#modals${activity.workout.id}`}>
+                                                        운동리스트 관리하기
+                                                    </button>
+                                                    <Link to={'/search'} className='list-group-item list-group-item-action'>
+                                                        더 많은 운동 찾아보기
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <p className='mt-3'>후기를 적어서 다른 회원들에게 도움을 주세요!</p>
+                                            <Link className='btn btn-primary' to={`/checkout/${activity.workout.id}`}>
+                                                리뷰 적으러가기.
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                            </div>
+                        ))}
+                    </>
+                ) : (
+                    <div className='mt-3'>
+                        <h3>현재 활성화된 운동이 없습니다.</h3>
+                        <Link className='btn btn-primary' to={'/search'}>새로운 운동 찾으러가기.</Link>
+                    </div>
+                )}
+            </div>
+
+            {/* --- Mobile 화면 (Lg 미만) --- */}
+            <div className='d-lg-none mt-2'>
+                {shelfCurrentActivities.length > 0 ? (
+                    <>
+                        <h5>운동 리스트:</h5>
+                        {shelfCurrentActivities.map(activity => (
+                            <div key={activity.workout.id}>
+                                <div className='row mt-3 mb-3'>
+                                    <div className='col-4 col-md-4 container'>
+                                        <img src={getWorkoutImage(activity.workout.img)} width='226' height='349' alt='Workout' />
+                                    </div>
+                                    <div className='card d-flex mt-5 mb-3'>
+                                        <div className='card-body container'>
+                                            <div className='mt-3'>
+                                                <h4>Options</h4>
+                                                {activity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {activity.daysLeft}일</p>}
+                                                {activity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
+
+                                                <div className='list-group mt-3'>
+                                                    <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#modals${activity.workout.id}`}>
+                                                        운동리스트 관리하기
+                                                    </button>
+                                                    <Link to={'/search'} className='list-group-item list-group-item-action'>
+                                                        더 많은 운동 찾아보기
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <p className='mt-3'>후기를 적어서 다른 회원들에게 도움을 주세요!</p>
+                                            <Link className='btn btn-primary' to={`/checkout/${activity.workout.id}`}>
+                                                리뷰 적으러가기.
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                            </div>
+                        ))}
+                    </>
+                ) : (
+                    <div className='mt-3'>
+                        <h3>현재 활성화된 운동이 없습니다.</h3>
+                        <Link className='btn btn-primary' to={'/search'}>새로운 운동 찾으러가기.</Link>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
