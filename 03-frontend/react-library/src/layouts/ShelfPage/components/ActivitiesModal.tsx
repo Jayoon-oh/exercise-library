@@ -49,7 +49,7 @@ export const ActivitiesModal: React.FC<{ shelfCurrentActivity: ShelfCurrentActiv
                                     <button onClick={() => props.cancelWorkout(props.shelfCurrentActivity.workout.id)}
                                         data-bs-dismiss='modal' className="list-group-item list-group-item-action"
                                         aria-current='true'>
-                                        목록에서 삭제
+                                        운동완료
                                     </button>
                                     <button onClick={props.shelfCurrentActivity.daysLeft < 0 ?
                                         (event) => event.preventDefault()

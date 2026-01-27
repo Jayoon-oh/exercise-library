@@ -1,8 +1,10 @@
 package com.workout.diary.service;
 
 import com.workout.diary.dao.ActiveRoutineRepository;
+import com.workout.diary.dao.HistoryRepository;
 import com.workout.diary.dao.WorkoutRepository;
 import com.workout.diary.entity.ActiveRoutine;
+import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,12 @@ public class WorkoutService {
 
     private WorkoutRepository workoutRepository;
     private ActiveRoutineRepository activeRoutineRepository;
+    private HistoryRepository historyRepository;
 
-    public WorkoutService(WorkoutRepository workoutRepository, ActiveRoutineRepository activeRoutineRepository) {
+    public WorkoutService(WorkoutRepository workoutRepository, ActiveRoutineRepository activeRoutineRepository, HistoryRepository historyRepository) {
         this.workoutRepository = workoutRepository;
         this.activeRoutineRepository = activeRoutineRepository;
+        this.historyRepository = historyRepository;
     }
 
     public Workout activeWorkout (String userEmail, Long workoutId) throws Exception {
@@ -112,6 +116,18 @@ public class WorkoutService {
 
             workoutRepository.save(workout.get());
             activeRoutineRepository.deleteById(validateActive.getId());
+
+            History history = new History(
+                    userEmail,
+                    validateActive.getStartDate(),
+                    LocalDate.now().toString(),
+                    workout.get().getTitle(),
+                    workout.get().getSource(),
+                    workout.get().getDescription(),
+                    workout.get().getImg()
+            );
+
+            historyRepository.save(history);
         }
 
         public void extendDays(String userEmail, Long workoutId) throws Exception {
@@ -131,5 +147,7 @@ public class WorkoutService {
                 activeRoutineRepository.save(validateActive);
             }
         }
+
+
     }
 
