@@ -1,5 +1,6 @@
 package com.workout.diary.config;
 
+import com.workout.diary.entity.Message;
 import com.workout.diary.entity.Review;
 import com.workout.diary.entity.Workout;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +25,11 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
                 config.exposeIdsFor(Workout.class);
                 config.exposeIdsFor(Review.class);
+                config.exposeIdsFor(Message.class);
 
                 disableHttpMethods(Workout.class, config, theUnsupportedActions);
                 disableHttpMethods(Review.class, config, theUnsupportedActions);
+                disableHttpMethods(Message.class, config, theUnsupportedActions);
 
                 // CORS 설정: 다른 도메인(localhost:3000) 에서 API 접속 허용.
                 cors.addMapping(config.getBasePath() + "/**")

@@ -18,7 +18,7 @@ export const WorkoutServices = () => {
                     <div className='d-grigap-2 justify-content-md-start mb-4 mb-lg-3'>
                         {isAuthenticated ?
                             <Link type='button' className='btn main-color btn-lg text-white'
-                                to='search'>문의하기</Link>
+                                to='/messages'>문의하기</Link>
                             :
                             <Link className='btn main-color btn-lg text-white' to='/login'>로그인</Link>
                         }
