@@ -90,7 +90,7 @@ export const SearchWorkoutsPage = () => {
         } else {
             setSearchUrl(`/search/findByTitleContaining?title=${search}&page=<pageNumber>&size=${workoutsPerPage}`)
         }
-        setCategorySelection('Workout category')
+        setCategorySelection('부위별검색')
     }
 
     const categoryField = (value: string) => {
