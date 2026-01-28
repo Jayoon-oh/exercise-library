@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { Redirect } from "react-router-dom";
 import { AdminMessages } from "./components/AdminMessages";
+import { AddNewWorkout } from "./components/AddNewWorkout";
 
 export const ManageLibraryPage = () => {
     const { getIdTokenClaims } = useAuth0();
@@ -72,7 +73,7 @@ export const ManageLibraryPage = () => {
                 <div className="tab-content" id='nav-tabContent'>
                     <div className="tab-pane fade show active" id='nav-add-workout' role='tabpanel'
                         aria-labelledby="nav-add-workout-tab">
-                        새로운 운동 추가
+                        <AddNewWorkout />
                     </div>
                     <div className="tab-pane fade" id='nav-quantity' role='tabpanel' aria-labelledby="nav-quantity-tab">
                         {changeQuantityOfWorkoutsClick ? <>수량 변경</> : <></>}
