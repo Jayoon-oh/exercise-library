@@ -4,6 +4,9 @@ import com.workout.diary.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
@@ -12,4 +15,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                               Pageable pageable);
 
     Review findByUserEmailAndWorkoutId(String userEmail, Long workoutId);
+
+    @Modifying
+    @Query("delete from Review r where r.workoutId in :workout_id")
+    void deletedAllByWorkoutId(@Param("workout_id") Long workoutId);
 }

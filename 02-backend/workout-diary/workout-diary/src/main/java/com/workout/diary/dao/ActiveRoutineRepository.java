@@ -2,6 +2,9 @@ package com.workout.diary.dao;
 
 import com.workout.diary.entity.ActiveRoutine;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -10,4 +13,8 @@ public interface ActiveRoutineRepository extends JpaRepository<ActiveRoutine, Lo
     ActiveRoutine findByUserEmailAndWorkoutId(String userEmail, Long bookId);
 
     List<ActiveRoutine> findWorkoutsByUserEmail(String userEmail);
+
+    @Modifying
+    @Query("delete from ActiveRoutine a where a.workoutId in :workout_id")
+    void deletedAllByWorkoutId(@Param("workout_id") Long workoutId);
 }

@@ -21,14 +21,52 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    @PutMapping("/secure/increase/workout/slots")
+    public void increaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
+                                @RequestParam Long workoutId) throws Exception {
+        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
+
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.increaseWorkoutSlots(workoutId);
+    }
+
+    @PutMapping("/secure/decrease/workout/slots")
+    public void decreaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
+                                @RequestParam Long workoutId) throws Exception {
+        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
+
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.increaseWorkoutSlots(workoutId);
+    }
+
+
     @PostMapping("/secure/add/workout")
     public void postWorkout(@AuthenticationPrincipal Jwt jwt,
                             @RequestBody AddWorkoutRequest addWorkoutRequest) throws Exception{
         List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
+
         if (admin == null || !admin.equals("admin")) {
             throw new Exception("Administration page only");
         }
         adminService.postWorkout(addWorkoutRequest);
+    }
+
+    @DeleteMapping("/secure/delete/workout")
+    public void deleteWorkout(@AuthenticationPrincipal Jwt jwt,
+                            @RequestParam Long workoutId) throws Exception{
+        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
+
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.deleteWorkout(workoutId);
     }
 }

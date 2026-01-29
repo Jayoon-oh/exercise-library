@@ -78,7 +78,7 @@ export const HistoryPage = () => {
         <div className="mt-2">
             {Histories.length > 0 ?
                 <>
-                    <h5>최근 기록</h5>
+                    <h5>최근  기록</h5>
 
                     {Histories.map(history => (
                         <div key={history.id}>

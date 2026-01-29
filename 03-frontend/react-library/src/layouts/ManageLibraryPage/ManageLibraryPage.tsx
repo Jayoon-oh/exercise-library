@@ -4,6 +4,7 @@ import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { Redirect } from "react-router-dom";
 import { AdminMessages } from "./components/AdminMessages";
 import { AddNewWorkout } from "./components/AddNewWorkout";
+import { ChangeSlotsOfWorkouts } from "./components/ChangeSlotsOfWorkouts";
 
 export const ManageLibraryPage = () => {
     const { getIdTokenClaims } = useAuth0();
@@ -76,7 +77,7 @@ export const ManageLibraryPage = () => {
                         <AddNewWorkout />
                     </div>
                     <div className="tab-pane fade" id='nav-quantity' role='tabpanel' aria-labelledby="nav-quantity-tab">
-                        {changeQuantityOfWorkoutsClick ? <>수량 변경</> : <></>}
+                        {changeQuantityOfWorkoutsClick ? <ChangeSlotsOfWorkouts /> : <></>}
                     </div>
                     <div className="tab-pane fade" id='nav-messages' role='tabpanel' aria-labelledby="nav-messages-tab">
                         {messagesClick ? <AdminMessages /> : <></>}

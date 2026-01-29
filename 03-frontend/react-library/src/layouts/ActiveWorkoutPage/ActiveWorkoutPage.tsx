@@ -188,7 +188,7 @@ export const ActiveWorkoutPage = () => {
                     throw new Error('Something went wrong');
                 }
                 const workoutActivatedResponseJson = await workoutActivataed.json();
-                setIsReviewLeft(workoutActivatedResponseJson);
+                setIsActivated(workoutActivatedResponseJson);
             }
             setIsLoadingUserReview(false);
         }
@@ -255,15 +255,23 @@ export const ActiveWorkoutPage = () => {
         )
     }
 
-    // 이미지경로
-    let workoutImage;
-    try {
-        if (workout?.img) {
-            workoutImage = require(`./../../Images/ExerciseImages/${workout.img}`);
+    // 1. 이미지 처리 로직 업데이트
+    let workoutImage: string;
+
+    if (workout?.img) {
+        if (workout.img.startsWith('data:')) {
+            // DB에서 가져온 실제 Base64 데이터인 경우
+            workoutImage = workout.img;
         } else {
-            workoutImage = require('./../../Images/ExerciseImages/barbellrow.jpg');
+            // 기존 폴더 내 파일명인 경우
+            try {
+                workoutImage = require(`./../../Images/ExerciseImages/${workout.img}`);
+            } catch (error) {
+                workoutImage = require('./../../Images/ExerciseImages/barbellrow.jpg');
+            }
         }
-    } catch (error) {
+    } else {
+        // 이미지 데이터가 없는 경우 기본값
         workoutImage = require('./../../Images/ExerciseImages/barbellrow.jpg');
     }
 

@@ -13,9 +13,10 @@ export const Navbar = () => {
     useEffect(() => {
         const fetchRoles = async () => {
             const claims = await getIdTokenClaims();
-            const fetchedRoles = claims?.['https://exercise-library.com/roles'] || [];
+            const fetchedRoles = claims?.['http://exercise-library.com/roles'] || [];
             setRoles(fetchedRoles);
             setLoading(false);
+            console.log("fetchRoles--------------->", fetchRoles)
         };
 
         fetchRoles();
@@ -63,7 +64,7 @@ export const Navbar = () => {
                         }
                         {isAuthenticated && roles?.includes('admin') &&
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/admin'>관리자</NavLink>
+                                <NavLink className='nav-link' to='/admin'>관리자페이지</NavLink>
                             </li>
                         }
                     </ul>

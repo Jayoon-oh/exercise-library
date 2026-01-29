@@ -58,51 +58,55 @@ export const AddNewWorkout = () => {
 
     async function submitNewWorkout(e: any) {
         e.preventDefault(); // 페이지 새로고침 방지
-        const imageToSubmit = selectedImage;
 
-        if (!imageToSubmit) {
-            alert("이미지가 없습니다.")
-            return
+        setDisplaySuccess(false);
+        setDisplayWarning(false);
+
+        if (!isAuthenticated ||
+            title.trim() === '' ||
+            source.trim() === '' ||
+            muscleGroup === '부위' ||
+            description.trim() === '' ||
+            slots < 0 ||
+            selectedImage === null) {
+
+            setDisplayWarning(true);
+            return;
         }
 
-        const url = `http://localhost:8080/api/admin/secure/add/workout`;
         const accessToken = await getAccessTokenSilently();
-        if (isAuthenticated && title !== '' && source !== '' && muscleGroup !== '부위'
-            && description !== '' && slots >= 0 && imageToSubmit !== null) {
-            if (!selectedImage) {
-                alert("이미지 변환이 아직 완료되지 않았습니다.")
-                return;
-            }
-            const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, slots, muscleGroup);
-            workout.img = imageToSubmit;
-            console.log("최종 전송 객체 확인:", workout);
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(workout)
-            };
+        const url = `http://localhost:8080/api/admin/secure/add/workout`;
+        const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, slots, muscleGroup);
+        workout.img = selectedImage;
 
-            const response = await fetch(url, requestOptions);
-            if (response.ok) {
-                setTitle('');
-                setSource('');
-                setDescription('');
-                setSlots(0);
-                setMuscleGroup('부위');
-                setSelectedImage(null);
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
-                setDisplayWarning(false);
-                setDisplaySuccess(true);
-            } else {
-                setDisplayWarning(true);
-                setDisplaySuccess(false);
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(workout)
+        };
+
+        const response = await fetch(url, requestOptions);
+
+        if (response.ok) {
+            setTitle('');
+            setSource('');
+            setDescription('');
+            setSlots(0);
+            setMuscleGroup('부위');
+            setSelectedImage(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
+            setDisplayWarning(false);
+            setDisplaySuccess(true);
+        } else {
+            setDisplayWarning(true);
+            setDisplaySuccess(false);
         }
+
     }
 
     return (
@@ -160,12 +164,12 @@ export const AddNewWorkout = () => {
                     </div>
                     <input type="file" ref={fileInputRef} onChange={e => base64ConversionForImages(e)} />
                     <div>
-                        <button type='button' className="btn btn-primary mt-3" onClick={(e) => submitNewWorkout(e)} disabled={!selectedImage}>
+                        <button type='button' className="btn btn-primary mt-3" onClick={(e) => submitNewWorkout(e)} >
                             추가
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
