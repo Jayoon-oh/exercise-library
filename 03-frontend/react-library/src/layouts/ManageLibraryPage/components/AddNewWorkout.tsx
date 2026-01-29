@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddWorkoutRequest from "../../../models/AddWorkoutRequest";
 
 export const AddNewWorkout = () => {
@@ -25,35 +25,57 @@ export const AddNewWorkout = () => {
     }
 
     async function base64ConversionForImages(e: any) {
-        setSelectedImage(null);
+        const file = e.target.files?.[0];
 
-        if (e.target.files[0]) {
-            getBase64(e.target.files[0]);
-        }
-    }
-
-    function getBase64(file: any) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            if (reader.result) {
-                setSelectedImage(reader.result);
-                console.log("새 이미지 변환 완료")
+        if (e.target.files && e.target.files[0]) {
+            try {
+                const result = await getBase64(e.target.files[0]);
+                setSelectedImage(result);
+            } catch (error) {
+                console.error("이미지 변환 실패:", error);
+                setSelectedImage(null);
             }
-        };
-        reader.onerror = function (error) {
-            console.log('Error', error);
-            setSelectedImage(null); // 에러 발생 시 초기화
+        } else {
+            // 파일 선택 취소했을 경우 처리
+            setSelectedImage(null);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     }
 
-    async function submitNewWorkout() {
+    function getBase64(file: any): Promise<string | ArrayBuffer | null> {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                resolve(reader.result);
+
+            };
+            reader.onerror = function (error) {
+                reject(error);
+            };
+        });
+    }
+
+    async function submitNewWorkout(e: any) {
+        e.preventDefault(); // 페이지 새로고침 방지
+        const imageToSubmit = selectedImage;
+
+        if (!imageToSubmit) {
+            alert("이미지가 없습니다.")
+            return
+        }
+
         const url = `http://localhost:8080/api/admin/secure/add/workout`;
         const accessToken = await getAccessTokenSilently();
         if (isAuthenticated && title !== '' && source !== '' && muscleGroup !== '부위'
-            && description !== '' && slots >= 0 && selectedImage !== null) {
+            && description !== '' && slots >= 0 && imageToSubmit !== null) {
+            if (!selectedImage) {
+                alert("이미지 변환이 아직 완료되지 않았습니다.")
+                return;
+            }
             const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, slots, muscleGroup);
-            workout.img = selectedImage;
+            workout.img = imageToSubmit;
+            console.log("최종 전송 객체 확인:", workout);
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -63,24 +85,23 @@ export const AddNewWorkout = () => {
                 body: JSON.stringify(workout)
             };
 
-            const submitNewWorkoutResponse = await fetch(url, requestOptions);
-            if (!submitNewWorkoutResponse.ok) {
-                throw new Error('Something went wrong!');
+            const response = await fetch(url, requestOptions);
+            if (response.ok) {
+                setTitle('');
+                setSource('');
+                setDescription('');
+                setSlots(0);
+                setMuscleGroup('부위');
+                setSelectedImage(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                setDisplayWarning(false);
+                setDisplaySuccess(true);
+            } else {
+                setDisplayWarning(true);
+                setDisplaySuccess(false);
             }
-            setTitle('');
-            setSource('');
-            setDescription('');
-            setSlots(0);
-            setMuscleGroup('Category');
-            setSelectedImage(null);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-            setDisplayWarning(false);
-            setDisplaySuccess(true);
-        } else {
-            setDisplayWarning(true);
-            setDisplaySuccess(false);
         }
     }
 
@@ -101,50 +122,48 @@ export const AddNewWorkout = () => {
                     새로운 운동 추가
                 </div>
                 <div className="card-body">
-                    <form action="POST">
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">제목</label>
-                                <input type="text" className="form-control" name='title' required
-                                    onChange={e => setTitle(e.target.value)} value={title} />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">출처</label>
-                                <input type="text" className="form-control" name='title' required
-                                    onChange={e => setSource(e.target.value)} value={source} />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">분류</label>
-                                <button className="form-control btn btn-secondary dropdown-toggle" type='button'
-                                    id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
-                                    {muscleGroup}
-                                </button>
-                                <ul id='addNewWorkoutId' className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a onClick={() => categoryField('하체')} className="dropdown-item">하체</a></li>
-                                    <li><a onClick={() => categoryField('등')} className="dropdown-item">등</a></li>
-                                    <li><a onClick={() => categoryField('가슴')} className="dropdown-item">가슴</a></li>
-                                    <li><a onClick={() => categoryField('어깨')} className="dropdown-item">어깨</a></li>
-                                    <li><a onClick={() => categoryField('팔')} className="dropdown-item">팔</a></li>
-                                </ul>
-                            </div>
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label">제목</label>
+                            <input type="text" className="form-control" name='title' required
+                                onChange={e => setTitle(e.target.value)} value={title} />
                         </div>
-                        <div className="col-md-12 mb-3">
-                            <label className="form-label">설명</label>
-                            <textarea className="form-control" id="exampleFormControlTextarea1" rows={3}
-                                onChange={e => setDescription(e.target.value)} value={description}></textarea>
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label">출처</label>
+                            <input type="text" className="form-control" name='title' required
+                                onChange={e => setSource(e.target.value)} value={source} />
                         </div>
-                        <div className="col-md-3 mb-3">
-                            <label className="form-label">세트수</label>
-                            <input type="number" className="form-control" name='세트수' required
-                                onChange={e => setSlots(Number(e.target.value))} value={slots} />
-                        </div>
-                        <input type="file" ref={fileInputRef} onChange={e => base64ConversionForImages(e)} />
-                        <div>
-                            <button type='button' className="btn btn-primary mt-3" onClick={submitNewWorkout}>
-                                추가
+                        <div className="col-md-6 mb-3">
+                            <label className="form-label">분류</label>
+                            <button className="form-control btn btn-secondary dropdown-toggle" type='button'
+                                id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'>
+                                {muscleGroup}
                             </button>
+                            <ul id='addNewWorkoutId' className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a onClick={() => categoryField('하체')} className="dropdown-item">하체</a></li>
+                                <li><a onClick={() => categoryField('등')} className="dropdown-item">등</a></li>
+                                <li><a onClick={() => categoryField('가슴')} className="dropdown-item">가슴</a></li>
+                                <li><a onClick={() => categoryField('어깨')} className="dropdown-item">어깨</a></li>
+                                <li><a onClick={() => categoryField('팔')} className="dropdown-item">팔</a></li>
+                            </ul>
                         </div>
-                    </form>
+                    </div>
+                    <div className="col-md-12 mb-3">
+                        <label className="form-label">설명</label>
+                        <textarea className="form-control" id="exampleFormControlTextarea1" rows={3}
+                            onChange={e => setDescription(e.target.value)} value={description}></textarea>
+                    </div>
+                    <div className="col-md-3 mb-3">
+                        <label className="form-label">세트수</label>
+                        <input type="number" className="form-control" name='세트수' required
+                            onChange={e => setSlots(Number(e.target.value))} value={slots} />
+                    </div>
+                    <input type="file" ref={fileInputRef} onChange={e => base64ConversionForImages(e)} />
+                    <div>
+                        <button type='button' className="btn btn-primary mt-3" onClick={(e) => submitNewWorkout(e)} disabled={!selectedImage}>
+                            추가
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

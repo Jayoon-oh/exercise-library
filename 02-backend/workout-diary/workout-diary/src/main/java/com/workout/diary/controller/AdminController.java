@@ -26,8 +26,6 @@ public class AdminController {
                             @RequestBody AddWorkoutRequest addWorkoutRequest) throws Exception{
         List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
-        System.out.println(admin+"<-------roles");
-        System.out.println(admin+"<-------Admin");
         if (admin == null || !admin.equals("admin")) {
             throw new Exception("Administration page only");
         }
