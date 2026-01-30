@@ -18,7 +18,7 @@ export const Activies = () => {
         const fetchUserCurrentActivities = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `http://localhost:8080/api/workouts/secure/currentActives`;
+                const url = `${process.env.REACT_APP_API}/workouts/secure/currentActives`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -46,7 +46,7 @@ export const Activies = () => {
     if (httpError) return <div className='container m-5'><p>{httpError}</p></div>;
 
     async function cancelWorkout(workoutId: number) {
-        const url = `http://localhost:8080/api/workouts/secure/cancel?workoutId=${workoutId}`;
+        const url = `${process.env.REACT_APP_API}/workouts/secure/cancel?workoutId=${workoutId}`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'PUT',
@@ -63,7 +63,7 @@ export const Activies = () => {
     }
 
     async function extendDays(workoutId: number) {
-        const url = `http://localhost:8080/api/workouts/secure/extend/days?workoutId=${workoutId}`;
+        const url = `${process.env.REACT_APP_API}/workouts/secure/extend/days?workoutId=${workoutId}`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'PUT',

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/workouts")
 public class WorkoutController {
@@ -27,41 +27,41 @@ public class WorkoutController {
     @GetMapping("/secure/currentActives")
     public List<ShelfCurrentActivitiesResponse> currentActivities(@AuthenticationPrincipal Jwt jwt)
         throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return workoutService.currentLoans(userEmail);
     }
 
     @GetMapping("/secure/currentActives/count")
     public int currentActivesCount(@AuthenticationPrincipal Jwt jwt) {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return workoutService.currentActivesCount(userEmail);
     }
 
     @GetMapping("/secure/isActivated/byuser")
     public boolean activeWorkoutByUser(@AuthenticationPrincipal Jwt jwt,
             @RequestParam Long workoutId) {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return workoutService.activeWorkoutByUser(userEmail, workoutId);
     }
 
     @PutMapping("/secure/active")
     public Workout activeWorkout (@AuthenticationPrincipal Jwt jwt,
             @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return workoutService.activeWorkout(userEmail, workoutId);
     }
 
     @PutMapping("/secure/cancel")
     public void cancelWorkout(@AuthenticationPrincipal Jwt jwt,
                               @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         workoutService.cancelWorkout(userEmail, workoutId);
     }
 
     @PutMapping("/secure/extend/days")
     public void extendDays(@AuthenticationPrincipal Jwt jwt,
                            @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         workoutService.extendDays(userEmail, workoutId);
     }
 }

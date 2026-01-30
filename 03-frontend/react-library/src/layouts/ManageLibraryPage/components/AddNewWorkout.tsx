@@ -75,7 +75,7 @@ export const AddNewWorkout = () => {
         }
 
         const accessToken = await getAccessTokenSilently();
-        const url = `http://localhost:8080/api/admin/secure/add/workout`;
+        const url = `${process.env.REACT_APP_API}/admin/secure/add/workout`;
         const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, slots, muscleGroup);
         workout.img = selectedImage;
 

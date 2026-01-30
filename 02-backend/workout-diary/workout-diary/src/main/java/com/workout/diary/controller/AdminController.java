@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -24,7 +24,7 @@ public class AdminController {
     @PutMapping("/secure/increase/workout/slots")
     public void increaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
                                 @RequestParam Long workoutId) throws Exception {
-        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
 
         if (admin == null || !admin.equals("admin")) {
@@ -36,7 +36,7 @@ public class AdminController {
     @PutMapping("/secure/decrease/workout/slots")
     public void decreaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
                                 @RequestParam Long workoutId) throws Exception {
-        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
 
         if (admin == null || !admin.equals("admin")) {
@@ -49,7 +49,7 @@ public class AdminController {
     @PostMapping("/secure/add/workout")
     public void postWorkout(@AuthenticationPrincipal Jwt jwt,
                             @RequestBody AddWorkoutRequest addWorkoutRequest) throws Exception{
-        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
 
         if (admin == null || !admin.equals("admin")) {
@@ -61,7 +61,7 @@ public class AdminController {
     @DeleteMapping("/secure/delete/workout")
     public void deleteWorkout(@AuthenticationPrincipal Jwt jwt,
                             @RequestParam Long workoutId) throws Exception{
-        List<String> roles = jwt.getClaimAsStringList("http://exercise-library.com/roles");
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
 
         if (admin == null || !admin.equals("admin")) {

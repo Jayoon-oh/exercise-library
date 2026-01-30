@@ -19,7 +19,7 @@ export const ChangeSlotsOfWorkouts = () => {
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            const baseUrl: string = `http://localhost:8080/api/workouts?page=${currentPage - 1}&size=${workoutsPerPage}`;
+            const baseUrl: string = `${process.env.REACT_APP_API}/workouts?page=${currentPage - 1}&size=${workoutsPerPage}`;
 
             const response = await fetch(baseUrl);
 

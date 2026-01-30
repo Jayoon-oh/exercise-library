@@ -6,7 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
@@ -20,7 +20,7 @@ public class ReviewController {
     @GetMapping("/secure/user/workout")
     public Boolean reviewWorkoutByUser(@AuthenticationPrincipal Jwt jwt,
                                        @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
 
         if(userEmail == null) {
             throw new Exception("User email is missing");
@@ -31,7 +31,7 @@ public class ReviewController {
     @PostMapping("/secure")
     public void postReview(@AuthenticationPrincipal Jwt jwt,
                            @RequestBody ReviewRequest reviewRequest) throws Exception {
-        String userEmail = jwt.getClaim("http://exercise-library.com/email");
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
         if (userEmail == null) {
             throw new Exception("User email is missing");
         }

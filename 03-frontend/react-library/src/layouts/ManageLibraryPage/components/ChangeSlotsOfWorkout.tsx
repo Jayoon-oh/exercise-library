@@ -17,7 +17,7 @@ export const ChangeSlotsOfWorkout: React.FC<{ workout: WorkoutModel, deleteWorko
     }, [])
 
     async function increaseSlots() {
-        const url = `http://localhost:8080/api/admin/secure/increase/workout/slots?workoutId=${props.workout?.id}`;
+        const url = `${process.env.REACT_APP_API}/admin/secure/increase/workout/slots?workoutId=${props.workout?.id}`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'PUT',
@@ -36,7 +36,7 @@ export const ChangeSlotsOfWorkout: React.FC<{ workout: WorkoutModel, deleteWorko
     }
 
     async function decreseSlots() {
-        const url = `http://localhost:8080/api/admin/secure/decrease/workout/slots?workoutId=${props.workout?.id}`;
+        const url = `${process.env.REACT_APP_API}/admin/secure/decrease/workout/slots?workoutId=${props.workout?.id}`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'PUT',
@@ -55,7 +55,7 @@ export const ChangeSlotsOfWorkout: React.FC<{ workout: WorkoutModel, deleteWorko
     }
 
     async function deleteWorkout() {
-        const url = `http://localhost:8080/api/admin/secure/delete/workout?workoutId=${props.workout?.id}`;
+        const url = `${process.env.REACT_APP_API}/admin/secure/delete/workout?workoutId=${props.workout?.id}`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'DELETE',

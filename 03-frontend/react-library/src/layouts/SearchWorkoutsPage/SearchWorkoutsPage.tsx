@@ -19,7 +19,7 @@ export const SearchWorkoutsPage = () => {
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            const baseUrl: string = 'http://localhost:8080/api/workouts';
+            const baseUrl: string = `${process.env.REACT_APP_API}/workouts`;
 
             let url: string = ``;
 

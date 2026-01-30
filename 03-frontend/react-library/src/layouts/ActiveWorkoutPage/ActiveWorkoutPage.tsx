@@ -39,7 +39,7 @@ export const ActiveWorkoutPage = () => {
 
     useEffect(() => {
         const fetchWorkout = async () => {
-            const baseUrl: string = `http://localhost:8080/api/workouts/${workoutId}`;
+            const baseUrl: string = `${process.env.REACT_APP_API}/workouts/${workoutId}`;
 
             const response = await fetch(baseUrl);
 
@@ -71,7 +71,7 @@ export const ActiveWorkoutPage = () => {
 
     useEffect(() => {
         const fetchWorkReviews = async () => {
-            const reviewUrl: string = `http://localhost:8080/api/reviews/search/findByWorkoutId?workoutId=${workoutId}`;
+            const reviewUrl: string = `${process.env.REACT_APP_API}/reviews/search/findByWorkoutId?workoutId=${workoutId}`;
 
             const responseReviews = await fetch(reviewUrl);
 
@@ -118,7 +118,7 @@ export const ActiveWorkoutPage = () => {
         const fetchUserReviewWorkout = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `http://localhost:8080/api/reviews/secure/user/workout?workoutId=${workoutId}`;
+                const url = `${process.env.REACT_APP_API}/reviews/secure/user/workout?workoutId=${workoutId}`;
 
                 const requestOptions = {
                     method: 'GET',
@@ -146,7 +146,7 @@ export const ActiveWorkoutPage = () => {
         const fetchUserCurrentActivitiesCount = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `http://localhost:8080/api/workouts/secure/currentActives/count`;
+                const url = `${process.env.REACT_APP_API}/workouts/secure/currentActives/count`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -174,7 +174,7 @@ export const ActiveWorkoutPage = () => {
         const fetchUserActivatedWorkout = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `http://localhost:8080/api/workouts/secure/isActivated/byuser?workoutId=${workoutId}`
+                const url = `${process.env.REACT_APP_API}/workouts/secure/isActivated/byuser?workoutId=${workoutId}`
 
                 const requestOptions = {
                     method: 'GET',
@@ -200,7 +200,7 @@ export const ActiveWorkoutPage = () => {
 
     async function activeWorkout() {
         const accessToken = await getAccessTokenSilently();
-        const url = `http://localhost:8080/api/workouts/secure/active?workoutId=${workoutId}`;
+        const url = `${process.env.REACT_APP_API}/workouts/secure/active?workoutId=${workoutId}`;
 
         const requestOptions = {
             method: 'PUT',
@@ -223,7 +223,7 @@ export const ActiveWorkoutPage = () => {
         }
 
         const reviewRequestModel = new ReviewRequestModel(starInput, workoutId, reviewDescription);
-        const url = `http://localhost:8080/api/reviews/secure`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure`;
         const accessToken = await getAccessTokenSilently();
         const requestOptions = {
             method: 'POST',

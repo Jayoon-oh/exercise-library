@@ -12,7 +12,7 @@ export const Carousel = () => {
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            const baseUrl: string = 'http://localhost:8080/api/workouts';
+            const baseUrl: string = `${process.env.REACT_APP_API}/workouts`;
 
             const url: string = `${baseUrl}?page=0&size=9`;
 
@@ -113,7 +113,7 @@ export const Carousel = () => {
             {/* Mobile */}
             <div className='d-lg-none mt-3'>
                 <div className='row d-flex justify-content-center align-items-center'>
-                    <ReturnWorkout workout={workouts[7]} key={workouts[7].id} />
+                    <ReturnWorkout workout={workouts[0]} key={workouts[0].id} />
                 </div>
             </div>
             <div className='homepage-carousel-title mt-3'>

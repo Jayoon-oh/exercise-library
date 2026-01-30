@@ -37,3 +37,17 @@ build/
 Thumbs.db
 
 src/main/resources/application-secret.properties
+
+### SSL & Keystore Security ###
+# 프론트엔드 인증서 및 키
+*.crt
+*.key
+*.pem
+
+# 백엔드 자바 키스토어 (PKCS12)
+*.p12
+*.jks
+
+# 환경 변수 설정 파일 (React용)
+.env
+.env.local
