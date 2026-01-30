@@ -3,9 +3,12 @@ import WorkoutModel from "../../models/WorkoutModel";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { SearchWorkout } from "./components/SearchWorkout";
 import { Pagination } from "../Utils/Pagination";
+import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const SearchWorkoutsPage = () => {
 
+    const { isAuthenticated } = useAuth0();
     const [workouts, setWorkouts] = useState<WorkoutModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
@@ -128,15 +131,24 @@ export const SearchWorkoutsPage = () => {
                 <div>
                     <div className='row mt-5'>
                         <div className='col-6'>
-                            <div className='input-group'>
-                                <input className='form-control me-2' type='search'
-                                    placeholder='검색하기' aria-labelledby='Search'
-                                    onChange={e => setSearch(e.target.value)} />
-                                <button className='btn btn-outline-success'
-                                    onClick={() => searchHandleChange()}>
-                                    검색
-                                </button>
-                            </div>
+                            <form onSubmit={(e) => {
+                                e.preventDefault(); searchHandleChange();
+                            }}>
+
+                                <div className='input-group'>
+                                    <input className='form-control me-2'
+                                        type='search'
+                                        placeholder='검색하기'
+                                        aria-labelledby='Search'
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
+                                    />
+                                    <button className='btn btn-outline-success'
+                                        type='submit'>
+                                        검색
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         <div className='col-4'>
                             <div className='dropdown'>
@@ -192,11 +204,34 @@ export const SearchWorkoutsPage = () => {
                             ))}
                         </>
                         :
-                        <div className='m-5'>
-                            <h3>
-                                찾는 운동이 없으신가요?
-                            </h3>
-                            <a type='button' className='btn main-color btn-md px-4 me-md-2 fw-bold text-white' href='#'>문의하기</a>
+                        <div className='container my-5'>
+                            <div className="card shadow-sm border-0 rounded-4 text-center p-5 bg-light">
+                                <div className="card-body py-5">
+                                    {isAuthenticated ?
+                                        <>
+                                            <h3 className='display-6 fw-bold mb-3'>
+                                                찾으시는 정보가 없으신가요?
+                                            </h3>
+                                            <p className="lead text-muted mb-4">
+                                                원하시는 운동 정보가 없다면 관리자에게 직접 문의하여 제안하실 수 있습니다.
+                                            </p>
+                                            <Link type='button' className='btn main-color btn-lg px-5 shadow-sm fw-bold text-white' to='/messages'>
+                                                문의하기
+                                            </Link></>
+                                        :
+                                        <><h3 className='display-6 fw-bold mb-3'>
+                                            더 많은 정보를 원하시나요?
+                                        </h3>
+                                            <p className="lead text-muted mb-4">
+                                                로그인 후 관리자 문의가 가능합니다.
+                                            </p>
+                                            <Link className='btn main-color btn-lg px-5 shadow-sm fw-bold text-white' to='/login'>
+                                                로그인하기
+                                            </Link>
+                                        </>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     }
                     {totalPages > 1 &&
