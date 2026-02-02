@@ -11,7 +11,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
             } else if (props.isActivated) {
                 return (<p><b>운동리스트에 추가되었습니다. 열운동하세요!</b></p>)
             } else if (!props.isActivated) {
-                return (<p className='text-danger'>너무 많은 운동이 활성화 되어있어요!</p>)
+                return (<p className='text-danger'>최대 {props.currentActivitiesCount}개 운동까지만 집중 관리할 수 있어요!</p>)
             }
         }
         return (<Link to={'/login'} className="btn btn-success btn-lg">로그인</Link>)
@@ -44,22 +44,22 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
             <div className='card-body container'>
                 <div className='mt-3'>
                     <p>
-                        활성화된 운동
+                        나의 집중 루틴
                         <b> {props.currentActivitiesCount}/5 </b>
                     </p>
                     <hr />
                     {props.workout && props.workout.slotsAvailable && props.workout.slotsAvailable > 0 ?
                         <h4 className='text-success'>
-                            리스트 추가 가능
+                            루틴에 추가하기
                         </h4>
                         :
                         <h4 className='text-danger'>
-                            업데이트 예정
+                            준비 중
                         </h4>
                     }
                     <div className='row'>
                         <p className='col-6 lead'>
-                            권장 세트
+                            목표 세트
                             <b> {props.workout?.slots}</b>
                         </p>
                         <p className='col-6 lead'>

@@ -17,7 +17,7 @@ export const ManageLibraryPage = () => {
     useEffect(() => {
         const fetchRoles = async () => {
             const claims = await getIdTokenClaims();
-            const fetchedRoles = claims?.['http://exercise-library.com/roles'] || [];
+            const fetchedRoles = claims?.['https://exercise-library.com/roles'] || [];
             setRoles(fetchedRoles);
             setLoading(false);
         };

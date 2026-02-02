@@ -51,6 +51,16 @@ export const Carousel = () => {
         })
     }, []);
 
+    const chunckWorkouts = (array: WorkoutModel[], size: number) => {
+        const chuncked = [];
+        for (let i = 0; i < array.length; i += size) {
+            chuncked.push(array.slice(i, i + size));
+        }
+        return chuncked;
+    };
+
+    const workoutChuncks = chunckWorkouts(workouts, 3);
+
     if (isLoading) {
         return (
             <SpinnerLoading />
@@ -75,27 +85,15 @@ export const Carousel = () => {
 
                 {/* Desktop */}
                 <div className='carousel-inner'>
-                    <div className='carousel-item active'>
-                        <div className='row d-flex justify-content-center align-items-center'>
-                            {workouts.slice(0, 3).map(workout => (
-                                <ReturnWorkout workout={workout} key={workout.id} />
-                            ))}
+                    {workoutChuncks.map((chunk, index) => (
+                        <div className={`carousel-item ${index == 0 ? 'active' : ''}`} key={index}>
+                            <div className="row d-flex justify-content-center align-items-center">
+                                {chunk.map(workout => (
+                                    <ReturnWorkout workout={workout} key={workout.id} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                    <div className='carousel-item'>
-                        <div className='row d-flex justify-content-center align-items-center'>
-                            {workouts.slice(3, 6).map(workout => (
-                                <ReturnWorkout workout={workout} key={workout.id} />
-                            ))}
-                        </div>
-                    </div>
-                    <div className='carousel-item'>
-                        <div className='row d-flex justify-content-center align-items-center'>
-                            {workouts.slice(6, 9).map(workout => (
-                                <ReturnWorkout workout={workout} key={workout.id} />
-                            ))}
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 <button className='carousel-control-prev' type='button'

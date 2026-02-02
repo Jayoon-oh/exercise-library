@@ -47,5 +47,14 @@ public class History {
     @Column(name = "img")
     private String img;
 
+    @Column(name = "actual_sets")
+    private int actualSets;
+
+    @Column(name = "actual_reps")
+    private int actualReps;
+
+    @Column(name = "target_sets")
+    private int targetSets;
+
 
 }

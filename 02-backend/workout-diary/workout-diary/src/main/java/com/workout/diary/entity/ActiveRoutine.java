@@ -33,4 +33,7 @@ public class ActiveRoutine {
 
     @Column(name = "workout_id")
     private Long workoutId;
+
+    @Column(name = "max_sets")
+    private int maxSets;
 }
