@@ -1,6 +1,7 @@
 package com.workout.diary.controller;
 
 
+import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.service.WorkoutService;
@@ -38,17 +39,19 @@ public class WorkoutController {
     }
 
     @GetMapping("/secure/isActivated/byuser")
-    public boolean activeWorkoutByUser(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam Long workoutId) {
+    public ActiveRoutine activeWorkoutByUser(@AuthenticationPrincipal Jwt jwt,
+                                             @RequestParam Long workoutId) {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return workoutService.activeWorkoutByUser(userEmail, workoutId);
     }
 
     @PutMapping("/secure/active")
     public Workout activeWorkout (@AuthenticationPrincipal Jwt jwt,
-            @RequestParam Long workoutId) throws Exception {
+            @RequestParam Long workoutId,
+            @RequestParam int maxSets,
+            @RequestParam int maxReps) throws Exception {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
-        return workoutService.activeWorkout(userEmail, workoutId);
+        return workoutService.activeWorkout(userEmail, workoutId, maxSets, maxReps);
     }
 
     @PutMapping("/secure/cancel")

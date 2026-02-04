@@ -10,11 +10,13 @@ public class ActiveRoutine {
 
     public ActiveRoutine() {}
 
-    public ActiveRoutine(String userEmail, String startDate, String endDate, Long workoutId) {
+    public ActiveRoutine(String userEmail, String startDate, String endDate, Long workoutId, int maxSets, int maxReps) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.endDate = endDate;
         this.workoutId = workoutId;
+        this.maxSets = maxSets;
+        this.maxReps = maxReps;
     }
 
     @Id
@@ -36,4 +38,9 @@ public class ActiveRoutine {
 
     @Column(name = "max_sets")
     private int maxSets;
+
+    @Column(name = "max_reps")
+    private int maxReps;
+
+
 }

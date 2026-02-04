@@ -21,7 +21,7 @@ export const ActiveWorkoutPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
-    // Review State
+    // 리뷰
     const [reviews, setReviews] = useState<ReviewModel[]>([])
     const [totalStars, setTotalStars] = useState(0);
     const [isLoadingReview, setIsLoadingReview] = useState(true);
@@ -29,12 +29,16 @@ export const ActiveWorkoutPage = () => {
     const [isReviewLeft, setIsReviewLeft] = useState(false);
     const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
 
-    // Activites Count State
+    // 활성화 된 운동 수
     const [currentActivitiesCount, setCurrentActivitiesCount] = useState(0);
     const [isLoadingCurrentActivitiesCount, setIsLoadingCurrentActivitiesCount] = useState(true);
 
-    // Is workout Activated?
+    // 활성화 된 운동 확인
     const [isActivated, setIsActivated] = useState(false);
+
+    // 활성화 된 상세 정보
+    const [activeDetails, setActiveDetails] = useState<any>(null);
+
     const [isLoadingWorkoutActivated, setIsLoadingWorkoutActivated] = useState(false);
 
     useEffect(() => {
@@ -183,24 +187,31 @@ export const ActiveWorkoutPage = () => {
                         'Content-type': 'Application/json'
                     }
                 };
-                const workoutActivataed = await fetch(url, requestOptions);
-                if (!workoutActivataed.ok) {
-                    throw new Error('Something went wrong');
+
+                const response = await fetch(url, requestOptions);
+                if (!response.ok) {
+                    throw new Error("Something went wrong!");
                 }
-                const workoutActivatedResponseJson = await workoutActivataed.json();
-                setIsActivated(workoutActivatedResponseJson);
+
+                const text = await response.text();
+                if (text) {
+                    const result = JSON.parse(text); // parsing only if contents's existed.
+                    setIsActivated(true);
+                    setActiveDetails(result);
+                } else {
+                    setIsActivated(false);
+                    setActiveDetails(null);
+                }
             }
-            setIsLoadingUserReview(false);
         }
         fetchUserActivatedWorkout().catch((error: any) => {
-            setIsLoadingUserReview(false);
             setHttpError(error.message);
         })
     }, [workoutId, isAuthenticated, getAccessTokenSilently]);
 
-    async function activeWorkout() {
+    async function activeWorkout(sets: number, reps: number) {
         const accessToken = await getAccessTokenSilently();
-        const url = `${process.env.REACT_APP_API}/workouts/secure/active?workoutId=${workoutId}`;
+        const url = `${process.env.REACT_APP_API}/workouts/secure/active?workoutId=${workoutId}&maxSets=${sets}&maxReps=${reps}`;
 
         const requestOptions = {
             method: 'PUT',
@@ -213,7 +224,15 @@ export const ActiveWorkoutPage = () => {
         if (!activeResposne.ok) {
             throw new Error('Something went wrong!');
         }
+
+        alert("운동 리스트에 추가 되었습니다.")
+
         setIsActivated(true);
+
+        setActiveDetails({
+            maxSets: sets,
+            maxReps: reps
+        })
     }
 
     async function submitReview(starInput: number, reviewDescription: string) {
@@ -291,7 +310,7 @@ export const ActiveWorkoutPage = () => {
                             <StarsReview rating={totalStars} size={32} />
                         </div>
                     </div>
-                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} />
+                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
                 </div>
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} />
@@ -310,7 +329,7 @@ export const ActiveWorkoutPage = () => {
                         <StarsReview rating={totalStars} size={32} />
                     </div>
                 </div>
-                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} />
+                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
                 <hr />
                 <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} />
             </div>

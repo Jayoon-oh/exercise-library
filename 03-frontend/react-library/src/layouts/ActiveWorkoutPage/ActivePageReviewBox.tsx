@@ -2,16 +2,30 @@ import { Link } from "react-router-dom"
 import WorkoutModel from "../../models/WorkoutModel"
 import { StarsReview } from "../Utils/StarsReview"
 import { LeaveAReview } from "../Utils/LeaveAReview"
+import { useEffect, useState } from "react"
+import ShelfCurrentActivities from "../../models/ShelfCurrentActivities"
 
-export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any }> = (props) => {
+
+export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any, activeDetails: ShelfCurrentActivities | null }> = (props) => {
+
+    const [sets, setSets] = useState(5);
+    const [reps, setReps] = useState(12);
+
+    useEffect(() => {
+        if (props.isActivated && props.activeDetails) {
+            setSets(props.activeDetails.maxSets);
+            setReps(props.activeDetails.maxReps || 12)
+        }
+    }, [props.isActivated, props.activeDetails]);
+
     function buttonRender() {
         if (props.isAuthenticated) {
             if (!props.isActivated && props.currentActivitiesCount < 5) {
-                return (<button onClick={() => props.activeWorkout()} className="btn btn-success btn-lg">Activate</button>)
+                return (<button onClick={() => props.activeWorkout(sets, reps)} className="btn btn-success btn-lg">루틴에 추가하기</button>)
             } else if (props.isActivated) {
-                return (<p><b>운동리스트에 추가되었습니다. 열운동하세요!</b></p>)
+                return (<p className="text-center"><b>운동리스트에 추가 되었습니다.</b></p>)
             } else if (!props.isActivated) {
-                return (<p className='text-danger'>최대 {props.currentActivitiesCount}개 운동까지만 집중 관리할 수 있어요!</p>)
+                return (<p className='text-danger text-center'>최대 {props.currentActivitiesCount}개 운동까지만 집중 관리할 수 있어요!</p>)
             }
         }
         return (<Link to={'/login'} className="btn btn-success btn-lg">로그인</Link>)
@@ -27,7 +41,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
         } else if (props.isAuthenticated && props.isReviewLeft) {
             return (
                 <div>
-                    <b>리뷰를 남겨주셔서 감사합니다!</b>
+                    <b>이미 리뷰룰 남기셨습니다.</b>
                 </div>
             )
         }
@@ -48,7 +62,8 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
                         <b> {props.currentActivitiesCount}/5 </b>
                     </p>
                     <hr />
-                    {props.workout && props.workout.slotsAvailable && props.workout.slotsAvailable > 0 ?
+
+                    {/* {props.workout && props.workout.slotsAvailable && props.workout.slotsAvailable > 0 ?
                         <h4 className='text-success'>
                             루틴에 추가하기
                         </h4>
@@ -56,19 +71,21 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
                         <h4 className='text-danger'>
                             준비 중
                         </h4>
-                    }
-                    <div className='row'>
-                        <p className='col-6 lead'>
-                            목표 세트
-                            <b> {props.workout?.slots}</b>
-                        </p>
-                        <p className='col-6 lead'>
-                            난이도(LV)
-                            <b> {props.workout?.slotsAvailable} </b>
-                        </p>
+                    } */}
+                    <div className='row mb-4'>
+                        <div className='col-6'>
+                            <label className="form-label small text-muted">목표 세트</label>
+                            <input type="number" className="form-control text-center fw-bold" value={sets} disabled={props.isActivated} onChange={(e) => setSets(Number(e.target.value))} />
+                        </div>
+                        <div className='col-6'>
+                            <label className="form-label small text-muted">목표 횟수</label>
+                            <input type="number" className="form-control text-center fw-bold" value={reps} disabled={props.isActivated} onChange={(e) => setReps(parseInt(e.target.value))} />
+                        </div>
                     </div>
                 </div>
+
                 {buttonRender()}
+
                 <hr />
                 <p className='mt-3'>
                     ※ 위 가이드는 일반적인 기준입니다.

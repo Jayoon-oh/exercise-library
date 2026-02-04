@@ -32,7 +32,7 @@ public class WorkoutService {
         this.historyRepository = historyRepository;
     }
 
-    public Workout activeWorkout (String userEmail, Long workoutId) throws Exception {
+    public Workout activeWorkout (String userEmail, Long workoutId, int maxSets, int maxReps) throws Exception {
         Optional<Workout> workout = workoutRepository.findById(workoutId);
 
         ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
@@ -48,7 +48,9 @@ public class WorkoutService {
                 userEmail,
                 LocalDate.now().toString(),
                 LocalDate.now().plusDays(7).toString(),
-                workout.get().getId()
+                workout.get().getId(),
+                maxSets,
+                maxReps
         );
 
         activeRoutineRepository.save(activeRoutine);
@@ -56,13 +58,8 @@ public class WorkoutService {
         return workout.get();
     }
 
-    public Boolean activeWorkoutByUser(String userEmail, Long workoutId) {
-        ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
-        if (validateActive != null) {
-            return true;
-        } else {
-            return false;
-        }
+    public ActiveRoutine activeWorkoutByUser(String userEmail, Long workoutId) {
+        return activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
     }
 
         public int currentActivesCount(String userEmail) {
