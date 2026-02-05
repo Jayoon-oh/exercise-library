@@ -225,7 +225,7 @@ export const ActiveWorkoutPage = () => {
             throw new Error('Something went wrong!');
         }
 
-        alert("운동 리스트에 추가 되었습니다.")
+        alert("운동루틴에 추가 되었습니다.")
 
         setIsActivated(true);
 

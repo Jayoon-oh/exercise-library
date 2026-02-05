@@ -82,11 +82,11 @@ public class WorkoutService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             for (Workout workout : workouts) {
-                Optional<ActiveRoutine> ActiveRoutine = activeRoutineList.stream()
+                Optional<ActiveRoutine> activeRoutine = activeRoutineList.stream()
                         .filter(x -> x.getWorkoutId() == workout.getId()).findFirst();
 
-                if (ActiveRoutine.isPresent()) {
-                    Date d1 = sdf.parse(ActiveRoutine.get().getEndDate());
+                if (activeRoutine.isPresent()) {
+                    Date d1 = sdf.parse(activeRoutine.get().getEndDate());
                     Date d2 = sdf.parse(LocalDate.now().toString());
 
                     TimeUnit time = TimeUnit.DAYS;
@@ -94,7 +94,14 @@ public class WorkoutService {
                     long difference_In_time = time.convert(d1.getTime() - d2.getTime(),
                             TimeUnit.MILLISECONDS);
 
-                    shelfCurrentActivitiesResponses.add(new ShelfCurrentActivitiesResponse(workout, (int) difference_In_time));
+                    shelfCurrentActivitiesResponses.add(new ShelfCurrentActivitiesResponse(
+                            workout,
+                            (int) difference_In_time,
+                            activeRoutine.get().getMaxSets(),
+                            activeRoutine.get().getMaxReps()
+
+                    ));
+                    System.out.println("activeRoutine-------->"+activeRoutine);
                 }
             }
             return shelfCurrentActivitiesResponses;

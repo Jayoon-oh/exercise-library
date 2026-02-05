@@ -13,8 +13,8 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
 
     useEffect(() => {
         if (props.isActivated && props.activeDetails) {
-            setSets(props.activeDetails.maxSets);
-            setReps(props.activeDetails.maxReps || 12)
+            setSets(props.activeDetails.maxSets ?? 5);
+            setReps(props.activeDetails.maxReps ?? 12)
         }
     }, [props.isActivated, props.activeDetails]);
 
@@ -23,7 +23,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
             if (!props.isActivated && props.currentActivitiesCount < 5) {
                 return (<button onClick={() => props.activeWorkout(sets, reps)} className="btn btn-success btn-lg">루틴에 추가하기</button>)
             } else if (props.isActivated) {
-                return (<p className="text-center"><b>운동리스트에 추가 되었습니다.</b></p>)
+                return (<p className="text-center"><b>운동루틴에 추가 되었습니다.</b></p>)
             } else if (!props.isActivated) {
                 return (<p className='text-danger text-center'>최대 {props.currentActivitiesCount}개 운동까지만 집중 관리할 수 있어요!</p>)
             }

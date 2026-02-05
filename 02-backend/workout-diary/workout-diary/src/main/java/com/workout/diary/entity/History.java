@@ -48,13 +48,13 @@ public class History {
     private String img;
 
     @Column(name = "actual_sets")
-    private int actualSets;
+    private Integer actualSets;
 
     @Column(name = "actual_reps")
-    private int actualReps;
+    private Integer actualReps;
 
     @Column(name = "target_sets")
-    private int targetSets;
+    private Integer targetSets;
 
 
 }

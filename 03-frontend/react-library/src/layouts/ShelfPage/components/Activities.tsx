@@ -4,7 +4,6 @@ import ShelfCurrentActivities from '../../../models/ShelfCurrentActivities';
 import { SpinnerLoading } from '../../Utils/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { ActivitiesModal } from './ActivitiesModal';
-import { isFunctionTypeNode } from 'typescript';
 
 export const Activies = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -13,6 +12,10 @@ export const Activies = () => {
     const [shelfCurrentActivities, setShelfCurrentActivities] = useState<ShelfCurrentActivities[]>([]);
     const [isLoadingUserActivities, setIsLoadingUserActivies] = useState(true);
     const [activate, setActivate] = useState(false);
+
+    // Checkbox
+    const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
 
     useEffect(() => {
         const fetchUserCurrentActivities = async () => {
@@ -44,6 +47,16 @@ export const Activies = () => {
 
     if (isLoadingUserActivities) return <SpinnerLoading />;
     if (httpError) return <div className='container m-5'><p>{httpError}</p></div>;
+
+    const toggleCheck = (workoutId: number) => {
+        if (checkedIds.includes(workoutId)) {
+            // if it's checked, remove workoutIds
+            setCheckedIds(checkedIds.filter(id => id !== workoutId));
+        } else {
+            // if not, leave workoutIds
+            setCheckedIds([...checkedIds, workoutId]);
+        }
+    };
 
     async function cancelWorkout(workoutId: number) {
         const url = `${process.env.REACT_APP_API}/workouts/secure/cancel?workoutId=${workoutId}`;
@@ -98,42 +111,79 @@ export const Activies = () => {
             <div className='d-none d-lg-block mt-2'>
                 {shelfCurrentActivities.length > 0 ? (
                     <>
-                        <h5>운동 리스트:</h5>
-                        {shelfCurrentActivities.map(shelfCurrentActivity => (
-                            <div key={shelfCurrentActivity.workout.id}>
-                                <div className='row mt-3 mb-3'>
-                                    <div className='col-4 col-md-4 container'>
-                                        <img src={getWorkoutImage(shelfCurrentActivity.workout.img)} width='226' height='349' alt='Workout' />
-                                    </div>
-                                    <div className='card col-3 col-md-3 container d-flex'>
-                                        <div className='card-body'>
-                                            <div className='mt-3'>
-                                                <h5>⏳ 관리</h5>
-                                                {shelfCurrentActivity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {shelfCurrentActivity.daysLeft}일</p>}
-                                                {shelfCurrentActivity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
-                                                {shelfCurrentActivity.daysLeft < 0 && <p className='text-secondary'>새로운 운동을 추가하세요!</p>}
+                        <div className='d-flex justify-content-between align-items-center mb-4'>
+                            <h5>오늘 운동 루틴</h5>
+                            {/* 전체 완료 버튼 구현예정 */}
+                            <button className='btn btn-success fw-bold'>
+                                운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
+                            </button>
+                        </div>
 
-                                                <div className='list-group mt-3'>
-                                                    <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#modal${shelfCurrentActivity.workout.id}`}>
-                                                        상세설정
-                                                    </button>
-                                                    <Link to={'search'} className='list-group-item list-group-item-action'>
-                                                        다른 운동 찾기
-                                                    </Link>
+                        {shelfCurrentActivities.map(shelfCurrentActivity => {
+                            // confirm is it checked or not
+                            const isChecked = checkedIds.includes(shelfCurrentActivity.workout.id);
+
+                            return (
+                                <div key={shelfCurrentActivity.workout.id}
+                                    style={{ opacity: isChecked ? 0.5 : 1, transition: '0.3s' }}>
+                                    <div className='row align-items-center'>
+                                        <div className='col-1 text-center'>
+                                            <input
+                                                type='checkbox'
+                                                style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }}
+                                                checked={isChecked}
+                                                onChange={() => toggleCheck(shelfCurrentActivity.workout.id)} />
+                                        </div>
+
+                                        <div className='col-3 text-center'>
+                                            <img src={getWorkoutImage(shelfCurrentActivity.workout.img)} width='150' height='230' alt='Workout' />
+                                        </div>
+
+                                        <div className='card col-7 container d-flex'>
+                                            <div className='card-body'>
+                                                <div className='mt-3'>
+                                                    <h4 className={isChecked ? 'text-decoration-line-through text-muted' : 'fw-bold'}>
+                                                        {shelfCurrentActivity.workout.title}
+                                                    </h4>
+                                                    <p className='text-muted mb-3'>{shelfCurrentActivity.workout.source}</p>
+
+                                                    {/*show daily target sets & reps*/}
+                                                    <div className='d-flex align-items-center gap-4'>
+                                                        <div>
+                                                            <span className='text-secondary'>목표 세트: </span>
+                                                            <span className='fw-bold text-dark'>{shelfCurrentActivity.maxSets}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className='text-secondary'>횟수: </span>
+                                                            <span className='fw-bold text-dark'>{shelfCurrentActivity.maxReps}</span>
+                                                        </div>
+                                                        <div>
+                                                            {shelfCurrentActivity.daysLeft > 0 ? (
+                                                                <span className='text-primary fw-bold'>남은 기한: {shelfCurrentActivity.daysLeft}일</span>
+                                                            ) : (
+                                                                <span className='text-danger fw-bold'>기간만료</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='d-flex gap-2 mt-3'>
+                                                        <button className='btn btn-outline-danger btn-sm'
+                                                            onClick={() => { if (window.confirm("루틴에서 삭제하시겠습니까?")) cancelWorkout(shelfCurrentActivity.workout.id) }}
+                                                        >
+                                                            루틴 삭제
+                                                        </button>
+                                                        <Link className='btn btn-primary' to={`/active/${shelfCurrentActivity.workout.id}`}>
+                                                            리뷰작성
+                                                        </Link>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <hr />
-                                            <p className='mt-3'>소중한 후기를 적어서 다른 회원들에게 도움을 주세요!</p>
-                                            <Link className='btn btn-primary' to={`/checkout/${shelfCurrentActivity.workout.id}`}>
-                                                리뷰작성
-                                            </Link>
                                         </div>
                                     </div>
+                                    <hr />
                                 </div>
-                                <hr />
-                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={false} cancelWorkout={cancelWorkout} extendDays={extendDays} />
-                            </div>
-                        ))}
+                            );
+                        })}
                     </>
                 ) : (
                     <div className='mt-3'>
@@ -143,50 +193,87 @@ export const Activies = () => {
                 )}
             </div>
 
-            {/* --- Mobile 화면 (Lg 미만) --- */}
+            {/* --- Mobile 화면 --- */}
             <div className='d-lg-none mt-2'>
                 {shelfCurrentActivities.length > 0 ? (
                     <>
-                        <h5>운동 리스트:</h5>
-                        {shelfCurrentActivities.map(shelfCurrentActivity => (
-                            <div key={shelfCurrentActivity.workout.id}>
-                                <div className='row mt-3 mb-3'>
-                                    <div className='col-4 col-md-4 container'>
-                                        <img src={getWorkoutImage(shelfCurrentActivity.workout.img)} width='226' height='349' alt='Workout' />
-                                    </div>
-                                    <div className='card d-flex mt-5 mb-3'>
-                                        <div className='card-body container'>
-                                            <div className='mt-3'>
-                                                <h4>⏳ 관리</h4>
-                                                {shelfCurrentActivity.daysLeft > 0 && <p className='text-secondary'>남은 일수: {shelfCurrentActivity.daysLeft}일</p>}
-                                                {shelfCurrentActivity.daysLeft === 0 && <p className='text-secondary'>오늘까지 마무리 해주세요!</p>}
+                        <div className='d-flex justify-content-between align-items-center mb-4'>
+                            <h5>오늘 운동 루틴</h5>
+                            <button className='btn btn-success fw-bold'>
+                                운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
+                            </button>
+                        </div>
 
-                                                <div className='list-group mt-3'>
-                                                    <button className='list-group-item list-group-item-action' data-bs-toggle='modal' data-bs-target={`#mobilemodal${shelfCurrentActivity.workout.id}`}>
-                                                        상세설정
-                                                    </button>
-                                                    <Link to={'search'} className='list-group-item list-group-item-action'>
-                                                        다른 운동 찾기
-                                                    </Link>
+                        {shelfCurrentActivities.map(shelfCurrentActivity => {
+                            const isChecked = checkedIds.includes(shelfCurrentActivity.workout.id);
+
+                            return (
+                                <div key={shelfCurrentActivity.workout.id}
+                                    style={{ opacity: isChecked ? 0.5 : 1, transition: '0.3s' }}>
+
+                                    <div className='row align-items-center'>
+                                        <div className='col-1 text-center'>
+                                            <input
+                                                type='checkbox'
+                                                style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }}
+                                                checked={isChecked}
+                                                onChange={() => toggleCheck(shelfCurrentActivity.workout.id)}
+                                            />
+                                        </div>
+
+                                        <div className='col-3 text-center'>
+                                            <img src={getWorkoutImage(shelfCurrentActivity.workout.img)} className='img-fluid rounded' alt='Workout' />
+                                        </div>
+
+                                        <div className='card col-7 container d-flex'>
+                                            <div className='card-body'>
+                                                <div className='mt-2'>
+                                                    <h5 className={isChecked ? 'text-decoration-line-through text-muted' : 'fw-bold'}>
+                                                        {shelfCurrentActivity.workout.title}
+                                                    </h5>
+                                                    <p className='text-muted mb-2 small'>{shelfCurrentActivity.workout.source}</p>
+
+                                                    <div className='d-flex flex-wrap align-items-center gap-2 small'>
+                                                        <div>
+                                                            <span className='text-secondary'>목표 세트: </span>
+                                                            <span className='fw-bold text-dark'>{shelfCurrentActivity.maxSets}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className='text-secondary'>횟수: </span>
+                                                            <span className='fw-bold text-dark'>{shelfCurrentActivity.maxReps}</span>
+                                                        </div>
+                                                        <div>
+                                                            {shelfCurrentActivity.daysLeft > 0 ? (
+                                                                <span className='text-primary fw-bold'>D-{shelfCurrentActivity.daysLeft}</span>
+                                                            ) : (
+                                                                <span className='text-danger fw-bold'>만료</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='d-flex gap-2 mt-3'>
+                                                        <button className='btn btn-outline-danger btn-sm'
+                                                            onClick={() => { if (window.confirm("루틴에서 삭제하시겠습니까?")) cancelWorkout(shelfCurrentActivity.workout.id) }}>
+                                                            루틴 삭제
+                                                        </button>
+                                                        <Link className='btn btn-primary btn-sm' to={`/active/${shelfCurrentActivity.workout.id}`}>
+                                                            리뷰작성
+                                                        </Link>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <hr />
-                                            <p className='mt-3'>소중한 후기를 적어서 다른 회원들에게 도움을 주세요!</p>
-                                            <Link className='btn btn-primary' to={`/checkout/${shelfCurrentActivity.workout.id}`}>
-                                                리뷰작성
-                                            </Link>
                                         </div>
                                     </div>
+                                    <hr />
+                                    {/* <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={true} cancelWorkout={cancelWorkout} extendDays={extendDays} /> */}
                                 </div>
-                                <hr />
-                                <ActivitiesModal shelfCurrentActivity={shelfCurrentActivity} mobile={true} cancelWorkout={cancelWorkout} extendDays={extendDays} />
-                            </div>
-                        ))}
+                            );
+                        })}
                     </>
                 ) : (
-                    <div className='mt-3'>
+                    <div className='mt-3 text-center'>
                         <h3>현재 활성화된 운동이 없습니다.</h3>
-                        <Link className='btn btn-primary' to={`search`}>새로운 운동 찾으러가기.</Link>
+                        <Link className='btn btn-primary' to={`/search`}>새로운 운동 찾으러가기.</Link>
                     </div>
                 )}
             </div>

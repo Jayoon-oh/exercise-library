@@ -37,10 +37,10 @@ public class ActiveRoutine {
     private Long workoutId;
 
     @Column(name = "max_sets")
-    private int maxSets;
+    private Integer maxSets;
 
     @Column(name = "max_reps")
-    private int maxReps;
+    private Integer maxReps;
 
 
 }

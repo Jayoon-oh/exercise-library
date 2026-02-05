@@ -14,7 +14,7 @@ export const ShelfPage = () => {
                         <button onClick={() => setHistoryClick(false)} className="nav-link active" id='nav-loans-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-loans' type='button' role='tab' aria-controls='nav-loans'
                             aria-selected='true'>
-                            운동리스트
+                            운동루틴
                         </button>
                         <button onClick={() => setHistoryClick(true)} className="nav-link" id='nav-history-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-history' type='button' role='tab' aria-controls='nav-history'

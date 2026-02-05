@@ -58,7 +58,7 @@ export const Navbar = () => {
                         </li>
                         {isAuthenticated &&
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/shelf'>운동리스트</NavLink>
+                                <NavLink className='nav-link' to='/shelf'>운동루틴</NavLink>
                             </li>
                         }
                         {isAuthenticated && roles?.includes('admin') &&
