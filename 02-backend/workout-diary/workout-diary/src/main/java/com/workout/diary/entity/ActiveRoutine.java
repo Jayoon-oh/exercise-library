@@ -10,7 +10,7 @@ public class ActiveRoutine {
 
     public ActiveRoutine() {}
 
-    public ActiveRoutine(String userEmail, String startDate, String endDate, Long workoutId, int maxSets, int maxReps) {
+    public ActiveRoutine(String userEmail, String startDate, String endDate, Long workoutId, Integer maxSets, Integer maxReps) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.endDate = endDate;

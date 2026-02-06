@@ -93,6 +93,34 @@ export const Activies = () => {
         setActivate(!activate);
     }
 
+    async function completeWorkouts() {
+        if (checkedIds.length === 0) {
+            alert("완료할 운동을 선택해주세요.")
+            return;
+        }
+
+        const url = `${process.env.REACT_APP_API}/workouts/secure/complete`;
+        const accessToken = await getAccessTokenSilently();
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(checkedIds)
+        };
+
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
+
+        alert("오늘의 운동 완료! 기록이 저장 되었습니다.")
+        setCheckedIds([]); // initialize checkbox
+        setActivate(!activate);
+    }
+
     // 이미지 경로 처리 함수
     const getWorkoutImage = (imgName?: string) => {
         try {
@@ -114,7 +142,7 @@ export const Activies = () => {
                         <div className='d-flex justify-content-between align-items-center mb-4'>
                             <h5>오늘 운동 루틴</h5>
                             {/* 전체 완료 버튼 구현예정 */}
-                            <button className='btn btn-success fw-bold'>
+                            <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
                             </button>
                         </div>
@@ -199,7 +227,7 @@ export const Activies = () => {
                     <>
                         <div className='d-flex justify-content-between align-items-center mb-4'>
                             <h5>오늘 운동 루틴</h5>
-                            <button className='btn btn-success fw-bold'>
+                            <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
                             </button>
                         </div>

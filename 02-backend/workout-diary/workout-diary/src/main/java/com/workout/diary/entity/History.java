@@ -11,7 +11,7 @@ public class History {
     public History (){}
 
     public History(String userEmail, String startDate, String completedDate,
-                   String title, String source, String description, String img) {
+                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetSets) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.completedDate = completedDate;
@@ -19,6 +19,9 @@ public class History {
         this.source = source;
         this.description = description;
         this.img = img;
+        this.actualReps = actualReps;
+        this.actualSets = actualSets;
+        this.targetSets = targetSets;
     }
 
     @Id

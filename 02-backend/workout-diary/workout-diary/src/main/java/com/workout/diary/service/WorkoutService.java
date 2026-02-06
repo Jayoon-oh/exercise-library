@@ -101,10 +101,42 @@ public class WorkoutService {
                             activeRoutine.get().getMaxReps()
 
                     ));
-                    System.out.println("activeRoutine-------->"+activeRoutine);
                 }
             }
             return shelfCurrentActivitiesResponses;
+        }
+
+        public void completeWorkouts(String userEmail, List<Long> workoutIds) throws Exception {
+            List<ActiveRoutine> activeRoutines = activeRoutineRepository.findByUserEmailAndWorkoutIds(userEmail, workoutIds);
+
+            if (activeRoutines.isEmpty()) {
+                throw new Exception("Cannot find ActivatedRoutine");
+            }
+
+            List<History> historyList = new ArrayList<>();
+
+            for (ActiveRoutine routine : activeRoutines) {
+                // loading workoutIds
+                Workout workout = workoutRepository.findById(routine.getWorkoutId())
+                        .orElseThrow(() -> new Exception("Cannot find WorkoutId. ID: " + routine.getWorkoutId()));
+
+                History history = new History(
+                        userEmail,
+                        routine.getStartDate(),
+                        LocalDate.now().toString(),
+                        workout.getTitle(),
+                        workout.getSource(),
+                        workout.getDescription(),
+                        workout.getImg(),
+                        routine.getMaxReps(),
+                        routine.getMaxSets(),
+                        routine.getMaxSets()
+                );
+                historyList.add(history);
+            }
+            historyRepository.saveAll(historyList);
+
+            activeRoutineRepository.deleteAll(activeRoutines);
         }
 
         public void cancelWorkout (String userEmail, Long workoutId) throws Exception {
@@ -128,7 +160,8 @@ public class WorkoutService {
                     workout.get().getTitle(),
                     workout.get().getSource(),
                     workout.get().getDescription(),
-                    workout.get().getImg()
+                    workout.get().getImg(),
+                    0, 0, 0
             );
 
             historyRepository.save(history);

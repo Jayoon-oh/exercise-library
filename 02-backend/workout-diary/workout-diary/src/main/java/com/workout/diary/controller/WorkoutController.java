@@ -54,6 +54,13 @@ public class WorkoutController {
         return workoutService.activeWorkout(userEmail, workoutId, maxSets, maxReps);
     }
 
+    @PutMapping("/secure/complete")
+    public void completeWorkouts(@AuthenticationPrincipal Jwt jwt,
+                                 @RequestBody List<Long> workoutIds) throws Exception {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        workoutService.completeWorkouts(userEmail, workoutIds);
+    }
+
     @PutMapping("/secure/cancel")
     public void cancelWorkout(@AuthenticationPrincipal Jwt jwt,
                               @RequestParam Long workoutId) throws Exception {

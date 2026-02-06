@@ -14,6 +14,10 @@ public interface ActiveRoutineRepository extends JpaRepository<ActiveRoutine, Lo
 
     List<ActiveRoutine> findWorkoutsByUserEmail(String userEmail);
 
+    // select for Multiple workouts (shelfCurrentWorkouts)
+    @Query("SELECT a FROM ActiveRoutine a WHERE a.userEmail = :userEmail AND a.workoutId IN :workoutIds")
+    List<ActiveRoutine> findByUserEmailAndWorkoutIds(@Param("userEmail") String userEmail, @Param("workoutIds") List<Long> workoutIds);
+
     @Modifying
     @Query("delete from ActiveRoutine a where a.workoutId in :workout_id")
     void deletedAllByWorkoutId(@Param("workout_id") Long workoutId);
