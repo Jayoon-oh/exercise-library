@@ -4,7 +4,7 @@ import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { Redirect } from "react-router-dom";
 import { AdminMessages } from "./components/AdminMessages";
 import { AddNewWorkout } from "./components/AddNewWorkout";
-import { ChangeSlotsOfWorkouts } from "./components/ChangeSlotsOfWorkouts";
+import { ManageWorkouts } from "./components/ManageWorkouts";
 
 export const ManageLibraryPage = () => {
     const { getIdTokenClaims } = useAuth0();
@@ -62,12 +62,12 @@ export const ManageLibraryPage = () => {
                         <button onClick={changeQuantityOfWorkoutsClickFunction} className="nav-link" id='nav-quantity-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-quantity' type='button' role='tab' aria-controls='nav-quantity'
                             aria-selected='true'>
-                            수량 변경
+                            운동 정보 변경
                         </button>
                         <button onClick={messagesClickFunction} className="nav-link" id='nav-messages-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-messages' type='button' role='tab' aria-controls='nav-messages'
                             aria-selected='true'>
-                            내용
+                            문의 답변하기
                         </button>
                     </div>
                 </nav>
@@ -77,7 +77,7 @@ export const ManageLibraryPage = () => {
                         <AddNewWorkout />
                     </div>
                     <div className="tab-pane fade" id='nav-quantity' role='tabpanel' aria-labelledby="nav-quantity-tab">
-                        {changeQuantityOfWorkoutsClick ? <ChangeSlotsOfWorkouts /> : <></>}
+                        {changeQuantityOfWorkoutsClick ? <ManageWorkouts /> : <></>}
                     </div>
                     <div className="tab-pane fade" id='nav-messages' role='tabpanel' aria-labelledby="nav-messages-tab">
                         {messagesClick ? <AdminMessages /> : <></>}

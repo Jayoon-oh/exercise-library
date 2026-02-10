@@ -9,6 +9,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -33,7 +38,7 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
 
                 // 3. CORS 설정 (Frontend인 localhost:3000 등과의 통신 허용)
-                .cors(withDefaults());
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         // 4. CSRF 보호 비활성화
         // REST API는 세션을 사용하지 않고 토큰을 사용하므로 일반적으로 CSRF를 비활성화.
@@ -45,5 +50,26 @@ public class SecurityConfiguration {
                 new HeaderContentNegotiationStrategy());
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 프론트엔드 주소 허용
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000"));
+
+        // PUT 메서드를 포함한 모든 필요 메서드 허용
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+
+        // 헤더 허용 (토큰 전송을 위해 Authorization 필수)
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+
+        // 쿠키나 인증 정보를 포함한 요청 허용
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

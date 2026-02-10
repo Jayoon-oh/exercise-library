@@ -58,8 +58,7 @@ export const ActiveWorkoutPage = () => {
                 title: responseJson.title,
                 source: responseJson.source,
                 description: responseJson.description,
-                slots: responseJson.slots,
-                slotsAvailable: responseJson.slotsAvailable,
+                recommendedSets: responseJson.recommendedSets,
                 muscleGroup: responseJson.muscleGroup,
                 img: responseJson.img,
             };

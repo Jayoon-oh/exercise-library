@@ -5,6 +5,7 @@ import com.workout.diary.dao.ReviewRepository;
 import com.workout.diary.dao.WorkoutRepository;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.requestmodels.AddWorkoutRequest;
+import com.workout.diary.requestmodels.UpdateWorkoutRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,41 +29,31 @@ public class AdminService {
         this.activeRoutineRepository = activeRoutineRepository;
     }
 
-    public void increaseWorkoutSlots(Long workoutId) throws Exception {
-        Optional<Workout> workout = workoutRepository.findById(workoutId);
-
-            if (!workout.isPresent()) {
-                throw new Exception("Workout not found");
-            }
-
-            workout.get().setSlotsAvailable(workout.get().getSlotsAvailable() + 1);
-            workout.get().setSlots(workout.get().getSlots() + 1);
-
-            workoutRepository.save(workout.get());
-        }
-
-    public void decreaseWorkoutSlots(Long workoutId) throws Exception {
-        Optional<Workout> workout = workoutRepository.findById(workoutId);
-
-        if (!workout.isPresent() || workout.get().getSlotsAvailable() <= 0 || workout.get().getSlots() <= 0) {
-            throw new Exception("Workout not found or quantity locked");
-        }
-
-        workout.get().setSlotsAvailable(workout.get().getSlotsAvailable() - 1);
-        workout.get().setSlots(workout.get().getSlots() - 1);
-
-        workoutRepository.save(workout.get());
-    }
 
     public void postWorkout(AddWorkoutRequest addWorkoutRequest) {
         Workout workout = new Workout();
         workout.setTitle(addWorkoutRequest.getTitle());
         workout.setSource(addWorkoutRequest.getSource());
         workout.setDescription(addWorkoutRequest.getDescription());
-        workout.setSlots(addWorkoutRequest.getSlots());
-        workout.setSlotsAvailable(addWorkoutRequest.getSlots());
+        workout.setRecommendedSets(addWorkoutRequest.getRecommendedSets());
         workout.setMuscleGroup(addWorkoutRequest.getMuscleGroup());
         workout.setImg(addWorkoutRequest.getImg());
+        workoutRepository.save(workout);
+    }
+
+    public void updateWorkout(UpdateWorkoutRequest updateWorkoutRequest) throws Exception {
+
+        // 1. find existing workouts
+        Workout workout = workoutRepository.findById(updateWorkoutRequest.getId())
+                .orElseThrow(() -> new Exception("cannot find existing workouts" + updateWorkoutRequest.getId()));
+
+        // 2. modify information of workouts
+        workout.setTitle(updateWorkoutRequest.getTitle());
+        workout.setSource(updateWorkoutRequest.getSource());
+        workout.setDescription(updateWorkoutRequest.getDescription());
+        workout.setMuscleGroup(updateWorkoutRequest.getMuscleGroup());
+        workout.setImg(updateWorkoutRequest.getImg());
+
         workoutRepository.save(workout);
     }
 

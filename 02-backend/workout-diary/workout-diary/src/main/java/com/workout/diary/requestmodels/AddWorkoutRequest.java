@@ -11,7 +11,7 @@ public class AddWorkoutRequest {
 
     private String description;
 
-    private int slots;
+    private int recommendedSets;
 
     private String muscleGroup;
 

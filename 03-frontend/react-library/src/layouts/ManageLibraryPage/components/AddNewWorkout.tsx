@@ -158,9 +158,30 @@ export const AddNewWorkout = () => {
                             onChange={e => setDescription(e.target.value)} value={description}></textarea>
                     </div>
                     <div className="col-md-3 mb-3">
-                        <label className="form-label">세트수</label>
+                        <label className="form-label">권장 세트수</label>
                         <input type="number" className="form-control" name='세트수' required
                             onChange={e => setSlots(Number(e.target.value))} value={slots} />
+                    </div>
+                    <div className="mt-3 mb-3">
+                        <label className="form-label">이미지 미리보기</label>
+                        <div className="d-block">
+                            {selectedImage ? (
+                                <img
+                                    src={selectedImage}
+                                    width='200'
+                                    height='300'
+                                    alt='Preview'
+                                    className="img-thumbnail shadow-sm"
+                                />
+                            ) : (
+                                <div
+                                    className="border d-flex align-items-center justify-content-center bg-light"
+                                    style={{ width: '200px', height: '300px', color: '#ccc' }}
+                                >
+                                    이미지를 선택해주세요
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <input type="file" ref={fileInputRef} onChange={e => base64ConversionForImages(e)} />
                     <div>

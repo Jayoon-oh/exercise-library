@@ -2,15 +2,15 @@ class AddWorkoutRequest {
     title: string;
     source: string;
     description: string;
-    slots: number;
+    recommendedSets: number;
     muscleGroup: string;
     img?: string;
 
-    constructor(title: string, source: string, description: string, slots: number, muscleGroup: string) {
+    constructor(title: string, source: string, description: string, recommendedSets: number, muscleGroup: string) {
         this.title = title;
         this.source = source;
         this.description = description;
-        this.slots = slots;
+        this.recommendedSets = recommendedSets;
         this.muscleGroup = muscleGroup;
     }
 }

@@ -33,7 +33,11 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
                 // CORS 설정: 다른 도메인(localhost:3000) 에서 API 접속 허용.
                 cors.addMapping(config.getBasePath() + "/**")
-                        .allowedOrigins(theAllowedOrigins);
+                        .allowedOrigins(theAllowedOrigins)
+                // PUT, DELETE 등이 Data Rest 경로에서도 허용.
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+                        .allowedHeaders("Authorization", "Content-Type", "Accept")
+                        .allowCredentials(true);
         }
 
         private void disableHttpMethods(Class theClass,

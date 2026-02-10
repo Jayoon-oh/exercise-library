@@ -61,6 +61,11 @@ export const Navbar = () => {
                                 <NavLink className='nav-link' to='/shelf'>운동루틴</NavLink>
                             </li>
                         }
+                        {isAuthenticated &&
+                            <li className='nav-item'>
+                                <NavLink className='nav-link' to='/messages'>Q&A</NavLink>
+                            </li>
+                        }
                         {isAuthenticated && roles?.includes('admin') &&
                             <li className='nav-item'>
                                 <NavLink className='nav-link' to='/admin'>관리자페이지</NavLink>

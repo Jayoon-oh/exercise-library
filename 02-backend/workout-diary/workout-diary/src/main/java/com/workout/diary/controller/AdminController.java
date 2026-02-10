@@ -1,6 +1,7 @@
 package com.workout.diary.controller;
 
 import com.workout.diary.requestmodels.AddWorkoutRequest;
+import com.workout.diary.requestmodels.UpdateWorkoutRequest;
 import com.workout.diary.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,30 +22,6 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PutMapping("/secure/increase/workout/slots")
-    public void increaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
-                                @RequestParam Long workoutId) throws Exception {
-        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
-        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
-
-        if (admin == null || !admin.equals("admin")) {
-            throw new Exception("Administration page only");
-        }
-        adminService.increaseWorkoutSlots(workoutId);
-    }
-
-    @PutMapping("/secure/decrease/workout/slots")
-    public void decreaseWorkoutSlots(@AuthenticationPrincipal Jwt jwt,
-                                @RequestParam Long workoutId) throws Exception {
-        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
-        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
-
-        if (admin == null || !admin.equals("admin")) {
-            throw new Exception("Administration page only");
-        }
-        adminService.increaseWorkoutSlots(workoutId);
-    }
-
 
     @PostMapping("/secure/add/workout")
     public void postWorkout(@AuthenticationPrincipal Jwt jwt,
@@ -56,6 +33,18 @@ public class AdminController {
             throw new Exception("Administration page only");
         }
         adminService.postWorkout(addWorkoutRequest);
+    }
+
+    @PutMapping("/secure/update/workout")
+    public void updateWorkout(@AuthenticationPrincipal Jwt jwt,
+                              @RequestBody UpdateWorkoutRequest updateWorkoutRequest) throws Exception{
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
+        String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
+
+        if (admin == null || !admin.equals("admin")) {
+            throw new Exception("Administration page only");
+        }
+        adminService.updateWorkout(updateWorkoutRequest);
     }
 
     @DeleteMapping("/secure/delete/workout")

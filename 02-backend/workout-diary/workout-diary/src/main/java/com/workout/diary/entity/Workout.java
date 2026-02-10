@@ -22,11 +22,8 @@ public class Workout {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "slots")
-    private int slots;
-
-    @Column(name = "slots_available")
-    private int slotsAvailable;
+    @Column(name = "recommendedSets")
+    private int recommendedSets;
 
     @Column(name = "muscle_group")
     private String muscleGroup;

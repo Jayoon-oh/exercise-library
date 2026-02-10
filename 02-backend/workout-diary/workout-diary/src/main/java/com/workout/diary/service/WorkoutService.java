@@ -37,12 +37,9 @@ public class WorkoutService {
 
         ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
 
-        if (!workout.isPresent() || validateActive != null || workout.get().getSlotsAvailable() <= 0) {
+        if (!workout.isPresent() || validateActive != null) {
             throw new Exception("Workout doesn't exist or already Activated by user");
         }
-
-        workout.get().setSlotsAvailable(workout.get().getSlotsAvailable() - 1);
-        workoutRepository.save(workout.get());
 
         ActiveRoutine activeRoutine = new ActiveRoutine(
                 userEmail,
@@ -148,9 +145,6 @@ public class WorkoutService {
                 throw new Exception("Workout doesn't exist or not checked out by user");
             }
 
-            workout.get().setSlotsAvailable(workout.get().getSlotsAvailable() + 1);
-
-            workoutRepository.save(workout.get());
             activeRoutineRepository.deleteById(validateActive.getId());
 
             History history = new History(

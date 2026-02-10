@@ -8,15 +8,17 @@ import ShelfCurrentActivities from "../../models/ShelfCurrentActivities"
 
 export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any, activeDetails: ShelfCurrentActivities | null }> = (props) => {
 
-    const [sets, setSets] = useState(5);
+    const [sets, setSets] = useState(props.workout?.recommendedSets || 5);
     const [reps, setReps] = useState(12);
 
     useEffect(() => {
         if (props.isActivated && props.activeDetails) {
             setSets(props.activeDetails.maxSets ?? 5);
             setReps(props.activeDetails.maxReps ?? 12)
+        } else if (!props.isActivated && props.workout) {
+            setSets(props.workout.recommendedSets ?? 5);
         }
-    }, [props.isActivated, props.activeDetails]);
+    }, [props.isActivated, props.activeDetails, props.workout]);
 
     function buttonRender() {
         if (props.isAuthenticated) {
@@ -41,7 +43,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
         } else if (props.isAuthenticated && props.isReviewLeft) {
             return (
                 <div>
-                    <b>이미 리뷰룰 남기셨습니다.</b>
+                    <b>이미 리뷰를 남기셨습니다.</b>
                 </div>
             )
         }
@@ -63,18 +65,11 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
                     </p>
                     <hr />
 
-                    {/* {props.workout && props.workout.slotsAvailable && props.workout.slotsAvailable > 0 ?
-                        <h4 className='text-success'>
-                            루틴에 추가하기
-                        </h4>
-                        :
-                        <h4 className='text-danger'>
-                            준비 중
-                        </h4>
-                    } */}
                     <div className='row mb-4'>
                         <div className='col-6'>
-                            <label className="form-label small text-muted">목표 세트</label>
+                            <label className="form-label small text-muted">목표 세트 {props.workout?.recommendedSets && !props.isActivated &&
+                                <span className="badge bg-info text-dark">권장: {props.workout.recommendedSets}</span>}
+                            </label>
                             <input type="number" className="form-control text-center fw-bold" value={sets} disabled={props.isActivated} onChange={(e) => setSets(Number(e.target.value))} />
                         </div>
                         <div className='col-6'>
