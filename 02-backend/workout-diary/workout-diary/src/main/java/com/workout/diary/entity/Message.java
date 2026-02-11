@@ -7,6 +7,16 @@ import lombok.Data;
 @Table(name = "workout_messages")
 @Data
 public class Message {
+
+    @Column(name = "created_at")
+    private java.time.LocalDateTime createdAt;
+
+    // input current time Automatically
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = java.time.LocalDateTime.now();
+    }
+
     public Message() {
     }
 

@@ -9,7 +9,7 @@ class WorkoutModel {
     img?: string;
 
     constructor(id: number, title: string, source: string, description: string,
-        slots: number, recommendedSets: number, muscleGroup: string, img: string) {
+        recommendedSets: number, muscleGroup: string, img: string) {
         this.id = id;
         this.title = title;
         this.source = source;

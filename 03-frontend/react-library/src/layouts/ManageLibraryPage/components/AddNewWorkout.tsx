@@ -9,7 +9,7 @@ export const AddNewWorkout = () => {
     const [title, setTitle] = useState('');
     const [source, setSource] = useState('');
     const [description, setDescription] = useState('');
-    const [slots, setSlots] = useState(0);
+    const [recommendedSets, setRecommendedSets] = useState(0);
     const [muscleGroup, setMuscleGroup] = useState('부위');
     const [selectedImage, setSelectedImage] = useState<any>(null);
 
@@ -67,7 +67,7 @@ export const AddNewWorkout = () => {
             source.trim() === '' ||
             muscleGroup === '부위' ||
             description.trim() === '' ||
-            slots < 0 ||
+            recommendedSets < 0 ||
             selectedImage === null) {
 
             setDisplayWarning(true);
@@ -76,7 +76,7 @@ export const AddNewWorkout = () => {
 
         const accessToken = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/admin/secure/add/workout`;
-        const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, slots, muscleGroup);
+        const workout: AddWorkoutRequest = new AddWorkoutRequest(title, source, description, recommendedSets, muscleGroup);
         workout.img = selectedImage;
 
         const requestOptions = {
@@ -94,7 +94,7 @@ export const AddNewWorkout = () => {
             setTitle('');
             setSource('');
             setDescription('');
-            setSlots(0);
+            setRecommendedSets(0);
             setMuscleGroup('부위');
             setSelectedImage(null);
             if (fileInputRef.current) {
@@ -159,8 +159,8 @@ export const AddNewWorkout = () => {
                     </div>
                     <div className="col-md-3 mb-3">
                         <label className="form-label">권장 세트수</label>
-                        <input type="number" className="form-control" name='세트수' required
-                            onChange={e => setSlots(Number(e.target.value))} value={slots} />
+                        <input type="number" className="form-control" placeholder="5" name='세트수' required
+                            onChange={e => setRecommendedSets(Number(e.target.value))} value={recommendedSets} />
                     </div>
                     <div className="mt-3 mb-3">
                         <label className="form-label">이미지 미리보기</label>

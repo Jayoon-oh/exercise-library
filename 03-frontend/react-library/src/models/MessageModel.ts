@@ -6,6 +6,7 @@ class MessageModel {
     adminEmail?: string;
     response?: string;
     closed?: boolean;
+    createdAt?: string;
 
     constructor(title: string, question: string) {
         this.title = title;

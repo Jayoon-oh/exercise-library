@@ -54,8 +54,7 @@ export const SearchWorkoutsPage = () => {
                     title: responseData[key].title,
                     source: responseData[key].source,
                     description: responseData[key].description,
-                    slots: responseData[key].slots,
-                    slotsAvailable: responseData[key].slotsAvailable,
+                    recommendedSets: responseData[key].recommendedSets,
                     muscleGroup: responseData[key].muscleGroup,
                     img: responseData[key].img,
                 });

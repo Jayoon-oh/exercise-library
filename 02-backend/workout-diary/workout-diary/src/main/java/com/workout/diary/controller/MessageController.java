@@ -4,6 +4,8 @@ import com.workout.diary.entity.Message;
 import com.workout.diary.requestmodels.AdminQuestionResponse;
 import com.workout.diary.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,30 @@ public class MessageController {
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
     }
+
+    @GetMapping("/secure/search/message")
+    public Page<Message> getUserMessages(@AuthenticationPrincipal Jwt jwt,
+                                         Pageable pageable) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+       return messageService.getUserMessages(userEmail, pageable);
+
+    }
+
+    @PutMapping("/secure/update/message")
+    public void updateMessage(@AuthenticationPrincipal Jwt jwt,
+                              @RequestParam Long messageId,
+                              @RequestBody Message messageRequest) throws Exception {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        messageService.updateMessage(userEmail, messageId, messageRequest);
+    }
+
+    @DeleteMapping("/secure/delete/message")
+    public void deleteMessage(@AuthenticationPrincipal Jwt jwt,
+                              @RequestParam Long messageId) throws Exception {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        messageService.deleteMessage(userEmail, messageId);
+    }
+
 
     @PostMapping("/secure/add/message")
     public void postMessage(@AuthenticationPrincipal Jwt jwt,

@@ -6,6 +6,10 @@ import com.workout.diary.requestmodels.AdminQuestionResponse;
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +23,41 @@ public class MessageService {
     @Autowired
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
+    }
+
+    public void deleteMessage(String userEmail, Long messageId) throws Exception {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new Exception("메시지를 찾을 수 없습니다."));
+
+        if (message.isClosed()) {
+            throw new Exception("답변이 완료된 후 질문은 삭제할 수 없습니다");
+        }
+        if (!message.getUserEmail().equals(userEmail)) {
+            throw new Exception("삭제 권한이 없습니다.");
+        }
+        messageRepository.delete(message);
+    }
+
+    public void updateMessage(String userEmail, Long messageId, Message updatedRequest) throws Exception {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new Exception("미시지를 찾을 수 없습니다."));
+
+        if (message.isClosed()) {
+            throw new Exception("답변이 완료된 질문은 수정할 수 없습니다.");
+        }
+        message.setTitle(updatedRequest.getTitle());
+        message.setQuestion(updatedRequest.getQuestion());
+        messageRepository.save(message);
+
+    }
+
+    public Page<Message> getUserMessages(String userEmail, Pageable pageable) {
+        Sort sort = Sort.by(Sort.Order.asc("closed"), Sort.Order.desc("createdAt"));
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        return messageRepository.findByUserEmail(userEmail, sortedPageable);
+
     }
 
     public void postMessage(Message messageRequest, String userEmail) {

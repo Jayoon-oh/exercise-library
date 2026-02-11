@@ -7,11 +7,11 @@ import { UpdateWorkoutModal } from "./UpdateWorkoutModal";
 export const ManageWorkout: React.FC<{ workout: WorkoutModel, deleteWorkout: any }> = (props) => {
 
     const { getAccessTokenSilently } = useAuth0();
-    const [slots, setSlots] = useState<number>(0);
+    const [recommendedSets, setRecommendedSets] = useState<number>(0);
     const [remaining, setRemaining] = useState<number>(0);
 
     useEffect(() => {
-        setSlots(props.workout.slots ? props.workout.slots : 0);
+        setRecommendedSets(props.workout.recommendedSets ? props.workout.recommendedSets : 0);
         setRemaining(props.workout.slotsAvailable ? props.workout.slotsAvailable : 0);
     }, [props.workout]);
 
@@ -43,7 +43,7 @@ export const ManageWorkout: React.FC<{ workout: WorkoutModel, deleteWorkout: any
         const accessToken = await getAccessTokenSilently();
 
         const updateRequest = new UpdateWorkoutRequest(
-            props.workout.id, title, source, description, Number(slots), muscleGroup
+            props.workout.id, title, source, description, Number(recommendedSets), muscleGroup
         );
 
         // maintain existing DB path if image didn't changed
