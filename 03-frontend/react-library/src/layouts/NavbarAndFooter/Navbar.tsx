@@ -68,7 +68,7 @@ export const Navbar = () => {
                         }
                         {isAuthenticated && roles?.includes('admin') &&
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/admin'>관리자페이지</NavLink>
+                                <NavLink className='nav-link' to='/admin'> | ⚙️ 관리자페이지</NavLink>
                             </li>
                         }
                     </ul>
