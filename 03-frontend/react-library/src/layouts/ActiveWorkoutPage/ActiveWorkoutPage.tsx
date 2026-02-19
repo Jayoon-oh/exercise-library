@@ -12,10 +12,12 @@ import { useParams } from "react-router-dom";
 
 export const ActiveWorkoutPage = () => {
 
+    const [reviewRenderTrigger, setReviewRenderTrigger] = useState(0);
+
     const { workoutId } = useParams<{ workoutId: string }>();
 
     // Auth0 인증
-    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
 
     const [workout, setWorkout] = useState<WorkoutModel>();
     const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +30,7 @@ export const ActiveWorkoutPage = () => {
 
     const [isReviewLeft, setIsReviewLeft] = useState(false);
     const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
+    const [displaySuccess, setDisplaySuccess] = useState(false);
 
     // 활성화 된 운동 수
     const [currentActivitiesCount, setCurrentActivitiesCount] = useState(0);
@@ -105,6 +108,8 @@ export const ActiveWorkoutPage = () => {
             if (loadedReviews) {
                 const round = (Math.round((weightedStarReviews / loadedReviews.length) * 2) / 2).toFixed(1);
                 setTotalStars(Number(round));
+            } else {
+                setTotalStars(0);
             }
 
             setReviews(loadedReviews);
@@ -115,7 +120,7 @@ export const ActiveWorkoutPage = () => {
             setIsLoadingReview(false);
             setHttpError(error.message);
         })
-    }, [isReviewLeft, workoutId]);
+    }, [workoutId, reviewRenderTrigger]);
 
     useEffect(() => {
         const fetchUserReviewWorkout = async () => {
@@ -256,8 +261,58 @@ export const ActiveWorkoutPage = () => {
             throw new Error('Something went wrong!');
         }
         setIsReviewLeft(true);
+        setReviewRenderTrigger(prev => prev + 1); // refresh list
     }
 
+    async function updateReview(starInput: number, reviewDescription: string) {
+        const url = `${process.env.REACT_APP_API}/reviews/secure/update/review`;
+        const accessToken = await getAccessTokenSilently();
+
+        const reviewRequestModel = new ReviewRequestModel(starInput, workout?.id || 0, reviewDescription);
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewRequestModel)
+        };
+
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) throw new Error('수정 실패');
+
+        setReviews(prev => prev.map(r =>
+            r.userEmail === user?.email ? { ...r, rating: starInput, reviewDescription } : r
+        ));
+        setIsReviewLeft(true);
+
+        setReviewRenderTrigger(prev => prev + 1);
+        setDisplaySuccess(true);
+        setTimeout(() => setDisplaySuccess(false), 3000);
+    }
+
+    async function deleteReview(reviewId: number) {
+        const url = `${process.env.REACT_APP_API}/reviews/secure/delete/review?reviewId=${reviewId}`;
+        const accessToken = await getAccessTokenSilently();
+
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) throw new Error('삭제 실패');
+
+        // update state
+        setIsReviewLeft(false); // available writing review
+        setReviewRenderTrigger(prev => prev + 1); // refresh review list
+        setDisplaySuccess(true);
+        setTimeout(() => setDisplaySuccess(false), 3000);
+    }
 
     if (isLoading || isLoadingReview || isLoadingCurrentActivitiesCount || isLoadingWorkoutActivated || isLoadingUserReview) {
         return (
@@ -293,8 +348,10 @@ export const ActiveWorkoutPage = () => {
         workoutImage = require('./../../Images/ExerciseImages/barbellrow.jpg');
     }
 
+
     return (
         <div>
+
             {/* Desktop version */}
             <div className='container d-none d-lg-block'>
                 <div className='row mt-5'>
@@ -312,7 +369,14 @@ export const ActiveWorkoutPage = () => {
                     <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
                 </div>
                 <hr />
-                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} />
+
+                {displaySuccess && (
+                    <div className="alert alert-success mt-3" role="alert">
+                        요청이 성공적으로 처리되었습니다.
+                    </div>
+                )}
+
+                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} userEmail={user?.email} updateReview={updateReview} deleteReview={deleteReview} />
             </div>
 
             {/* mobile version*/}
@@ -330,7 +394,7 @@ export const ActiveWorkoutPage = () => {
                 </div>
                 <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
                 <hr />
-                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} />
+                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} userEmail={user?.email} updateReview={updateReview} deleteReview={deleteReview} />
             </div>
         </div>
     );

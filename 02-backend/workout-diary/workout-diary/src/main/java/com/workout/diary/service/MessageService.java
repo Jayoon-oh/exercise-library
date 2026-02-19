@@ -40,7 +40,7 @@ public class MessageService {
 
     public void updateMessage(String userEmail, Long messageId, Message updatedRequest) throws Exception {
         Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new Exception("미시지를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception("메시지를 찾을 수 없습니다."));
 
         if (message.isClosed()) {
             throw new Exception("답변이 완료된 질문은 수정할 수 없습니다.");

@@ -2,6 +2,7 @@ package com.workout.diary.service;
 
 import com.workout.diary.dao.ReviewRepository;
 import com.workout.diary.dao.WorkoutRepository;
+import com.workout.diary.entity.Message;
 import com.workout.diary.entity.Review;
 import com.workout.diary.requestmodels.ReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,28 @@ public class ReviewService {
         // 4. 날짜 설정 및 저장
         review.setDate(Date.valueOf(LocalDate.now()));
         reviewRepository.save(review);
+    }
+
+    public void updateReview(String userEmail, ReviewRequest reviewRequest) throws Exception{
+        Review review = reviewRepository.findByUserEmailAndWorkoutId(userEmail, reviewRequest.getWorkoutId());
+
+        if(review == null) {
+            throw new Exception("해당 리뷰를 수정할 권한이 없습니다.");
+        }
+
+        review.setRating(reviewRequest.getRating());
+        review.setReviewDescription(reviewRequest.getReviewDescription().orElse(null));
+
+    }
+
+    public void deleteReview(String userEmail, Long reviewId) throws Exception {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new Exception("리뷰를 찾을 수 없습니다."));
+
+        if (!review.getUserEmail().equals(userEmail)) {
+            throw new Exception("삭제 권한이 없습니다.");
+        }
+        reviewRepository.delete(review);
     }
 
     public Boolean userReviewListed(String userEmail, Long workoutId) {

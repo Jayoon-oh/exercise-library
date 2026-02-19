@@ -14,6 +14,7 @@ import { ReviewListPage } from './layouts/ActiveWorkoutPage/ReviewListPage/Revie
 import { ShelfPage } from './layouts/ShelfPage/ShelfPage';
 import { MessagesPage } from './layouts/MessagesPage/MessagesPage';
 import { ManageLibraryPage } from './layouts/ManageLibraryPage/ManageLibraryPage';
+import { MyPage } from './layouts/MyPage/MyPage';
 
 
 
@@ -76,6 +77,7 @@ export const App = () => {
             <SecureRoute path='/shelf' component={ShelfPage} />
             <SecureRoute path='/messages' component={MessagesPage} />
             <SecureRoute path='/admin' component={ManageLibraryPage} />
+            <SecureRoute path='/profile' component={MyPage} />
           </Switch>
         </div>
         <Footer />

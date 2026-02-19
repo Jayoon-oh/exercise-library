@@ -1,5 +1,6 @@
 package com.workout.diary.controller;
 
+import com.workout.diary.entity.Review;
 import com.workout.diary.requestmodels.ReviewRequest;
 import com.workout.diary.service.ReviewService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,25 @@ public class ReviewController {
 
     public ReviewController (ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @PutMapping("/secure/update/review")
+    public void updateReview(@AuthenticationPrincipal Jwt jwt,
+                             @RequestBody ReviewRequest reviewRequest) throws Exception {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+
+        if(userEmail == null) {
+            throw new Exception("User email is missing");
+        }
+
+        reviewService.updateReview(userEmail, reviewRequest);
+    }
+
+    @DeleteMapping("/secure/delete/review")
+    public void deleteMessage(@AuthenticationPrincipal Jwt jwt,
+                              @RequestParam Long reviewId) throws Exception {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        reviewService.deleteReview(userEmail, reviewId);
     }
 
     @GetMapping("/secure/user/workout")

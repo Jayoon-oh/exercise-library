@@ -48,7 +48,9 @@ export const Navbar = () => {
                 >
                     <span className='navbar-toggler-icon'></span>
                 </button>
+
                 <div className='collapse navbar-collapse' id='navbarNavDropdown'>
+                    {/* left side of Navbar */}
                     <ul className='navbar-nav'>
                         <li className='nav-item'>
                             <NavLink className='nav-link' to='/home'>홈</NavLink>
@@ -56,35 +58,42 @@ export const Navbar = () => {
                         <li className='nav-item'>
                             <NavLink className='nav-link' to='/search'>검색</NavLink>
                         </li>
-                        {isAuthenticated &&
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to='/shelf'>운동루틴</NavLink>
-                            </li>
-                        }
-                        {isAuthenticated &&
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to='/messages'>Q&A</NavLink>
-                            </li>
-                        }
-                        {isAuthenticated && roles?.includes('admin') &&
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to='/admin'> | ⚙️ 관리자페이지</NavLink>
-                            </li>
-                        }
+                        {isAuthenticated && (
+                            <>
+                                <li className='nav-item'>
+                                    <NavLink className='nav-link' to='/shelf'>운동루틴</NavLink>
+                                </li>
+                                <li className='nav-item'>
+                                    <NavLink className='nav-link' to='/messages'>Q&A</NavLink>
+                                </li>
+                            </>
+                        )}
                     </ul>
-                    <ul className='navbar-nav ms-auto'>
-                        {!isAuthenticated ?
-                            <li className='nav-item m-1'>
+
+                    <ul className='navbar-nav ms-auto align-itmes-center'>
+                        {/* Right side of Navbar */}
+                        {isAuthenticated ? (
+                            <>
+                                {roles?.includes('admin') && (
+                                    <li className='nav-item'>
+                                        <NavLink className='nav-link' to='/admin'>⚙️ 관리자 <span className="text-white-50 ms-2 me-2">|</span></NavLink>
+                                    </li>
+                                )}
+                                <li className='nav-item'>
+                                    <NavLink className='nav-link' to='/profile'>마이페이지</NavLink>
+                                </li>
+                                <li className='nav-item ms-2'>
+                                    <button className='btn btn-outline-light' onClick={handleLogout}>로그아웃</button>
+                                </li>
+                            </>
+                        ) : (
+                            <li className='nav-item'>
                                 <button className='btn btn-outline-light' onClick={handleLogin}>로그인</button>
                             </li>
-                            :
-                            <li>
-                                <button className='btn btn-outline-light' onClick={handleLogout}>로그아웃</button>
-                            </li>
-                        }
+                        )}
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 }
