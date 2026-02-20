@@ -55,6 +55,18 @@ public class MessageController {
         messageService.postMessage(messageRequest, userEmail);
     }
 
+    @PutMapping("/secure/read/messages")
+    public void markMessagesAsRead(@AuthenticationPrincipal Jwt jwt) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        messageService.markMessagesAsRead(userEmail);
+    }
+
+    @GetMapping("/secure/unread/count")
+    public int getUnreadMessageCount(@AuthenticationPrincipal Jwt jwt) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        return messageService.getUnreadMessageCount(userEmail);
+    }
+
     @PutMapping("/secure/admin/message")
     public void PutMessage(@AuthenticationPrincipal Jwt jwt,
                            @RequestBody AdminQuestionResponse adminQuestionResponse) throws Exception {
@@ -64,7 +76,7 @@ public class MessageController {
         if (admin == null || !admin.equals("admin")) {
             throw new Exception("관리자만 가능합니다.");
         }
-        messageService.pubMessage(adminQuestionResponse, userEmail);
+        messageService.putMessage(adminQuestionResponse, userEmail);
     }
 
 }

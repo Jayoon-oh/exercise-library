@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,7 +67,22 @@ public class MessageService {
         messageRepository.save(message);
     }
 
-    public void pubMessage(AdminQuestionResponse adminQuestionResponse, String userEmail) throws Exception {
+    public int getUnreadMessageCount(String userEmail) {
+        return messageRepository.countByUserEmailAndClosedAndIsRead(userEmail, true, false);
+    }
+
+    public void markMessagesAsRead(String userEmail) {
+        List<Message> unreadMessages = messageRepository.findByUserEmailAndClosedAndIsRead(userEmail, true, false);
+
+        for (Message message : unreadMessages) {
+            message.setRead(true);
+        }
+
+        messageRepository.saveAll(unreadMessages);
+    }
+
+
+    public void putMessage(AdminQuestionResponse adminQuestionResponse, String userEmail) throws Exception {
         Optional<Message> message = messageRepository.findById(adminQuestionResponse.getId());
         if (!message.isPresent()) {
             throw new Exception("Message not found");
@@ -75,6 +91,7 @@ public class MessageService {
         message.get().setAdminEmail(userEmail);
         message.get().setResponse(adminQuestionResponse.getResponse());
         message.get().setClosed(true);
+        message.get().setRead(false);
         messageRepository.save(message.get());
     }
 }

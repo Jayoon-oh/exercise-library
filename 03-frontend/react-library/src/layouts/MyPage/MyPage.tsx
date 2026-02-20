@@ -1,11 +1,54 @@
 import { useAuth0 } from "@auth0/auth0-react"
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const MyPage = () => {
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const url = `${process.env.REACT_APP_API}/messages/secure/unread/count`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                if (!response.ok) throw new Error('Failed to fetch count');
+
+                const count = await response.json();
+                setUnreadCount(count);
+            } catch (error) {
+                console.error("Erorr fetching unread count:", error);
+            }
+        };
+
+        if (user) {
+            fetchUnreadCount();
+        }
+    }, [user, getAccessTokenSilently]);
 
     return (
         <div className="container mt-5">
+            {/* unread messages */}
+            {unreadCount > 0 && (
+                <div className="alert alert-warning shadow-sm d-flex justify-content-between align-items-center mb=4" role="alert">
+                    <div>
+                        <span className="me-2">✉️</span>
+                        확인하지 않은 <strong>{unreadCount}개</strong>의 답변이 있습니다!
+                    </div>
+                    <Link
+                        to={{ pathname: '/messages', state: { tab: 'qna' } } as any}
+                        className="btn btn-sm btn-warning"
+                    >
+                        보러가기
+                    </Link>
+                </div>
+            )}
             <div className="card shadow p-4">
                 <div className="d-flex align-items-center mb-4">
                     {/* user profile */}

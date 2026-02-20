@@ -23,6 +23,7 @@ public class Message {
     public Message(String title, String question) {
         this.title = title;
         this.question = question;
+        this.isRead = false;
     }
 
     @Id
@@ -48,4 +49,6 @@ public class Message {
     @Column(name = "closed")
     private boolean closed;
 
+    @Column(name = "is_read")
+    private boolean isRead;
 }
