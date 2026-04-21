@@ -1,4 +1,4 @@
-package com.workout.diary.dao;
+package com.workout.diary.repository;
 
 import com.workout.diary.entity.ActiveRoutine;
 import org.springframework.data.jpa.repository.JpaRepository;

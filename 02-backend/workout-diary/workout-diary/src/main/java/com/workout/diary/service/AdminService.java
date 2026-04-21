@@ -1,8 +1,8 @@
 package com.workout.diary.service;
 
-import com.workout.diary.dao.ActiveRoutineRepository;
-import com.workout.diary.dao.ReviewRepository;
-import com.workout.diary.dao.WorkoutRepository;
+import com.workout.diary.repository.ActiveRoutineRepository;
+import com.workout.diary.repository.ReviewRepository;
+import com.workout.diary.repository.WorkoutRepository;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.requestmodels.AddWorkoutRequest;
 import com.workout.diary.requestmodels.UpdateWorkoutRequest;

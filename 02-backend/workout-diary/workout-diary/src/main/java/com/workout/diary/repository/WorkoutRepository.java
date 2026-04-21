@@ -1,7 +1,6 @@
-package com.workout.diary.dao;
+package com.workout.diary.repository;
 
 import com.workout.diary.entity.Workout;
-import org.hibernate.annotations.ParamDef;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,12 +1,12 @@
 package com.workout.diary.service;
 
-import com.workout.diary.dao.ActiveRoutineRepository;
-import com.workout.diary.dao.HistoryRepository;
-import com.workout.diary.dao.WorkoutRepository;
+import com.workout.diary.repository.ActiveRoutineRepository;
+import com.workout.diary.repository.HistoryRepository;
+import com.workout.diary.repository.WorkoutRepository;
 import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
-import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
+import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,7 +127,8 @@ public class WorkoutService {
                         workout.getImg(),
                         routine.getMaxReps(),
                         routine.getMaxSets(),
-                        routine.getMaxSets()
+                        routine.getMaxSets(),
+                        workout.getMuscleGroup()
                 );
                 historyList.add(history);
             }
@@ -155,7 +156,8 @@ public class WorkoutService {
                     workout.get().getSource(),
                     workout.get().getDescription(),
                     workout.get().getImg(),
-                    0, 0, 0
+                    0, 0,0,
+                    workout.get().getMuscleGroup()
             );
 
             historyRepository.save(history);

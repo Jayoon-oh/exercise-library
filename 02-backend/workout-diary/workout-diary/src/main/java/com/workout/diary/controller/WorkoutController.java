@@ -3,10 +3,9 @@ package com.workout.diary.controller;
 
 import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.Workout;
-import com.workout.diary.responseModels.ShelfCurrentActivitiesResponse;
+import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;

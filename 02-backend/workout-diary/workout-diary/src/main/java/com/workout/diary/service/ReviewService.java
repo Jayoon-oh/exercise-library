@@ -1,8 +1,6 @@
 package com.workout.diary.service;
 
-import com.workout.diary.dao.ReviewRepository;
-import com.workout.diary.dao.WorkoutRepository;
-import com.workout.diary.entity.Message;
+import com.workout.diary.repository.ReviewRepository;
 import com.workout.diary.entity.Review;
 import com.workout.diary.requestmodels.ReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,7 +11,7 @@ public class History {
     public History (){}
 
     public History(String userEmail, String startDate, String completedDate,
-                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetSets) {
+                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetSets, String muscleGroup) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.completedDate = completedDate;
@@ -22,6 +22,7 @@ public class History {
         this.actualReps = actualReps;
         this.actualSets = actualSets;
         this.targetSets = targetSets;
+        this.muscleGroup = muscleGroup;
     }
 
     @Id
@@ -59,5 +60,6 @@ public class History {
     @Column(name = "target_sets")
     private Integer targetSets;
 
-
+    @Column(name = "muscle_group")
+    private String muscleGroup;
 }

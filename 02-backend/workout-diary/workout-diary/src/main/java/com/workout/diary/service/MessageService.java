@@ -1,9 +1,8 @@
 package com.workout.diary.service;
 
-import com.workout.diary.dao.MessageRepository;
+import com.workout.diary.repository.MessageRepository;
 import com.workout.diary.entity.Message;
 import com.workout.diary.requestmodels.AdminQuestionResponse;
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

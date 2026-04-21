@@ -1,4 +1,4 @@
-package com.workout.diary.dao;
+package com.workout.diary.repository;
 
 import com.workout.diary.entity.Message;
 import org.springframework.data.domain.Page;

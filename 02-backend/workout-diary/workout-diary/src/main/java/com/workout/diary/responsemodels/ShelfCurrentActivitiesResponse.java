@@ -1,4 +1,4 @@
-package com.workout.diary.responseModels;
+package com.workout.diary.responsemodels;
 
 import com.workout.diary.entity.Workout;
 import lombok.Data;
