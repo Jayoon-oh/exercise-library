@@ -28,9 +28,10 @@ public class SecurityConfiguration {
                 configurer
                         // "/secure/**"가 포함된 경로들은 반드시 인증(로그인)된 사용자만 접근 가능
                         .requestMatchers("/api/workouts/secure/**",
-                                "api/reviews/secure/**",
-                                "api/messages/secure/**",
-                                "api/admin/secure/**")
+                                "/api/reviews/secure/**",
+                                "/api/messages/secure/**",
+                                "/api/admin/secure/**"
+                        )
                         .authenticated()
                         // 그 외 모든 요청(일반 조회 등)은 누구나 접근 가능
                          .anyRequest().permitAll())
