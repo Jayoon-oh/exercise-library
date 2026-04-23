@@ -1,5 +1,6 @@
 package com.workout.diary.service;
 
+import com.workout.diary.constants.PointsConstants;
 import com.workout.diary.repository.ReviewRepository;
 import com.workout.diary.entity.Review;
 import com.workout.diary.requestmodels.ReviewRequest;
@@ -15,10 +16,11 @@ import java.time.LocalDate;
 public class ReviewService {
 
     private ReviewRepository reviewRepository;
-
+    private PointsService pointsService;
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PointsService pointsService) {
         this.reviewRepository = reviewRepository;
+        this.pointsService = pointsService;
     }
 
     public void postReview(String userEmail, ReviewRequest reviewRequest) throws Exception {
@@ -45,6 +47,7 @@ public class ReviewService {
         // 4. 날짜 설정 및 저장
         review.setDate(Date.valueOf(LocalDate.now()));
         reviewRepository.save(review);
+        pointsService.addPoints(userEmail, PointsConstants.REVIEW_WRITE_POINTS, PointsConstants.REVIEW_WRITE_MSG);
     }
 
     public void updateReview(String userEmail, ReviewRequest reviewRequest) throws Exception{

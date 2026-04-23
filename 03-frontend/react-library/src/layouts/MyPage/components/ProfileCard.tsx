@@ -57,6 +57,7 @@ export const ProfileCard = () => {
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
     }
+
     return (
         <div className="card bg-light p-3 mt-4">
             <h5 className="card-title">나의 프로필</h5>
