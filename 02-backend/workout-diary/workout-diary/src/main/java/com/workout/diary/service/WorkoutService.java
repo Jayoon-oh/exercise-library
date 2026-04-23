@@ -1,8 +1,7 @@
 package com.workout.diary.service;
 
-import com.workout.diary.repository.ActiveRoutineRepository;
-import com.workout.diary.repository.HistoryRepository;
-import com.workout.diary.repository.WorkoutRepository;
+import com.workout.diary.constants.PointsConstants;
+import com.workout.diary.repository.*;
 import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
@@ -25,11 +24,14 @@ public class WorkoutService {
     private WorkoutRepository workoutRepository;
     private ActiveRoutineRepository activeRoutineRepository;
     private HistoryRepository historyRepository;
+    private PointsService pointsService;
 
-    public WorkoutService(WorkoutRepository workoutRepository, ActiveRoutineRepository activeRoutineRepository, HistoryRepository historyRepository) {
+    public WorkoutService(WorkoutRepository workoutRepository, ActiveRoutineRepository activeRoutineRepository, HistoryRepository historyRepository
+    ,PointsService pointsService) {
         this.workoutRepository = workoutRepository;
         this.activeRoutineRepository = activeRoutineRepository;
         this.historyRepository = historyRepository;
+        this.pointsService = pointsService;
     }
 
     public Workout activeWorkout (String userEmail, Long workoutId, int maxSets, int maxReps) throws Exception {
@@ -135,6 +137,8 @@ public class WorkoutService {
             historyRepository.saveAll(historyList);
 
             activeRoutineRepository.deleteAll(activeRoutines);
+
+            pointsService.addPoints(userEmail, PointsConstants.WORKOUT_COMPLETE_POINTS, PointsConstants.WORKOUT_COMPLETE_MSG);
         }
 
         public void cancelWorkout (String userEmail, Long workoutId) throws Exception {

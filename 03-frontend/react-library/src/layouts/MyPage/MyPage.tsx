@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProfileCard } from "./components/ProfileCard";
 import { BodyRecord } from "./components/BodyRecord";
+import { PointsCard } from "./components/PointsCard";
 
 
 export const MyPage = () => {
@@ -71,14 +72,17 @@ export const MyPage = () => {
                 <hr />
 
                 {/*Q/A section*/}
-                <div className="col-md-4 mb-3">
-                    <div className="card h-100 bg-light">
-                        <div className="card-body text-center">
-                            <h5 className="card-title">나의 Q/A 내역</h5>
-                            <p className="card-text">작성한 질문과 답변을 확인하세요.</p>
-                            <Link to='/messages' className="btn btn-primary">이동하기</Link>
+                <div className="row mt-3">
+                    <div className="col-md-6 mb-3">
+                        <div className="card h-100 bg-light">
+                            <div className="card-body text-center">
+                                <h5 className="card-title">나의 Q/A 내역</h5>
+                                <p className="card-text">작성한 질문과 답변을 확인하세요.</p>
+                                <Link to='/messages' className="btn btn-primary">이동하기</Link>
+                            </div>
                         </div>
                     </div>
+                    <PointsCard />
                 </div>
 
                 {/*Components*/}
