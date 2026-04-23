@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import BodyRecordModel from "../../../models/BodyRecordModel";
 
 export const BodyRecord = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -8,6 +9,10 @@ export const BodyRecord = () => {
     const [monthlyCount, setMonthlyCount] = useState<number[]>([]);
     const [muscleGroupCount, setMuscleGroupCount] = useState<{ [key: string]: number }>({});
     const [thisMonthCount, setThisMonthCount] = useState<number>(0);
+    const [weight, setWeight] = useState<number | string>('')
+    const [height, setHeight] = useState<number | string>('')
+    const [saveSuccess, setSaveSuccess] = useState(false);
+    const [bodyRecords, setBodyRecords] = useState<BodyRecordModel[]>([]);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -56,6 +61,20 @@ export const BodyRecord = () => {
                 const countMuscleGroup = await response3.json();
                 setMuscleGroupCount(countMuscleGroup);
 
+                // 4. Graph for bodyRecords
+                const bodyRecords = `${process.env.REACT_APP_API}/profiles/secure/bodyRecords`;
+                const response4 = await fetch(bodyRecords, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                if (!response4.ok) throw new Error('Failed to fetch count');
+
+                const bodyRecordsGraph = await response4.json();
+                setBodyRecords(bodyRecordsGraph);
+
             } catch (error) {
                 console.error("Erorr fetching unread count:", error);
             }
@@ -65,6 +84,26 @@ export const BodyRecord = () => {
             fetchStats();
         }
     }, [user, getAccessTokenSilently]);
+
+    async function addBodyRecord() {
+        const token = await getAccessTokenSilently();
+        const url = `${process.env.REACT_APP_API}/profiles/secure/bodyRecord`;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ weight: Number(weight), height: Number(height) })
+        };
+
+        const response = await fetch(url, requestOptions)
+        if (!response.ok) throw new Error('Something went wrong');
+
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+    }
 
 
     const monthlyChartData = monthlyCount.map((count, index) => {
@@ -77,6 +116,12 @@ export const BodyRecord = () => {
     const muscleGroupChartData = Object.entries(muscleGroupCount).map(([key, value]) => ({
         name: key,
         value: value
+    }));
+
+    const bodyRecordsChartData = bodyRecords.map((record) => ({
+        date: record.recordedDate,
+        weight: record.weight,
+        height: record.height
     }));
 
     return (
@@ -138,6 +183,58 @@ export const BodyRecord = () => {
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div className="row mt-4">
+                <div className="col-12">
+                    <div className="card bg-light p-3">
+                        <h5 className="card-title">몸무게 기록</h5>
+                        <ResponsiveContainer width="100%" height={250}>
+                            <LineChart data={bodyRecordsChartData}>
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="weight" stroke="#198754" name="몸무게" />
+                                <Line type="monotone" dataKey="height" stroke="#0d6efd" name="키" />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            </div>
+
+            <div className="card bg-light p-3 mt-4">
+                <h5 className="card-title">몸무게 / 키 기록</h5>
+                <div className="row mt-3">
+                    {/* weight*/}
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">몸무게 (kg)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                        />
+                    </div>
+
+                    {/* height */}
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">키 (cm)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={height}
+                            onChange={(e) => setHeight(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                <button className="btn btn-success" onClick={addBodyRecord}>
+                    기록하기
+                </button>
+                {saveSuccess && (
+                    <div className="alert alert-success mt-2">기록됐습니다!</div>
+                )}
+            </div>
+        </div >
     )
 }
