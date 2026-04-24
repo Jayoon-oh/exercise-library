@@ -60,12 +60,14 @@ public class MessageService {
 
     }
 
+    // add new Q&A message
     public void postMessage(Message messageRequest, String userEmail) {
         Message message = new Message(messageRequest.getTitle(), messageRequest.getQuestion());
         message.setUserEmail(userEmail);
         messageRepository.save(message);
     }
 
+    // Count messages have not read
     public int getUnreadMessageCount(String userEmail) {
         return messageRepository.countByUserEmailAndClosedAndIsRead(userEmail, true, false);
     }

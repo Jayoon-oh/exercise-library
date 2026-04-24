@@ -3,12 +3,16 @@ import { NavLink } from "react-router-dom"
 import { SpinnerLoading } from "../Utils/SpinnerLoading"
 import { useAuth0 } from "@auth0/auth0-react"
 import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { UserSummaryModal } from "./components/UserSummaryModal";
+import UserSummary from "../../models/UserSummary";
 
 export const Navbar = () => {
 
     const [roles, setRoles] = useState<string[] | null>(null);
     const [loading, setLoading] = useState(true);
-    const { isAuthenticated, loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
+    const { getAccessTokenSilently, user, isAuthenticated, loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
+    const [showModal, setShowModal] = useState(false);
+    const [userSummary, setUserSummary] = useState<UserSummary | null>(null);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -19,7 +23,7 @@ export const Navbar = () => {
         };
 
         fetchRoles();
-    }, [isAuthenticated, getIdTokenClaims]);
+    }, [user, isAuthenticated, getIdTokenClaims]);
 
     if (loading) {
         return <SpinnerLoading />
@@ -34,6 +38,26 @@ export const Navbar = () => {
         loginWithRedirect();
         window.location.assign("/");
     };
+
+    async function fetchUserSummary() {
+        const token = await getAccessTokenSilently();
+        const url = `${process.env.REACT_APP_API}/summary/secure/user-summary`;
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const response = await fetch(url, requestOptions)
+        if (!response.ok) throw new Error('Something went wrong');
+
+        const data = await response.json();
+        setUserSummary(data);
+        setShowModal(true);
+    }
 
     console.log("isAuthenticated: ", isAuthenticated);
 
@@ -76,15 +100,27 @@ export const Navbar = () => {
                             <>
                                 {roles?.includes('admin') && (
                                     <li className='nav-item'>
-                                        <NavLink className='nav-link' to='/admin'>⚙️ 관리자 <span className="text-white-50 ms-2 me-2">|</span></NavLink>
+                                        <NavLink className='nav-link' to='/admin'>⚙️ 관리자 <span className="text-white-50 ms-2 me-2"></span></NavLink>
                                     </li>
                                 )}
-                                <li className='nav-item'>
-                                    <NavLink className='nav-link' to='/profile'>마이페이지</NavLink>
-                                </li>
                                 <li className='nav-item ms-2'>
-                                    <button className='btn btn-outline-light' onClick={handleLogout}>로그아웃</button>
+                                    <img
+                                        src={user?.picture}
+                                        alt="Profile"
+                                        className="rounded-circle me-3"
+                                        width="36"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={fetchUserSummary}
+                                    />
                                 </li>
+
+                                {showModal && (
+                                    <UserSummaryModal
+                                        userSummary={userSummary}
+                                        onClose={() => setShowModal(false)}
+                                        onLogout={handleLogout}
+                                    />
+                                )}
                             </>
                         ) : (
                             <li className='nav-item'>
