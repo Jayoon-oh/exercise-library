@@ -60,6 +60,16 @@ public class MessageService {
 
     }
 
+    public Page<Message> getAllMessages(Boolean closed , Pageable pageable) {
+        Sort sort = Sort.by(Sort.Order.asc("closed"), Sort.Order.desc("createdAt"));
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        if (closed == null) {
+            return messageRepository.findAll(sortedPageable);
+        }
+        return messageRepository.findByClosed(closed, sortedPageable);
+    }
+
     // add new Q&A message
     public void postMessage(Message messageRequest, String userEmail) {
         Message message = new Message(messageRequest.getTitle(), messageRequest.getQuestion());

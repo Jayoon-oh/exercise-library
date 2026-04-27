@@ -24,6 +24,21 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    // list of all Q&A
+    @GetMapping("/secure/messages")
+    public Page<Message> getMessages(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(required = false) Boolean closed,  // null 가능
+            Pageable pageable) throws Exception {
+
+        List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
+
+        if (roles == null || !roles.contains("admin")) {
+            throw new Exception("Administration page only");
+        }
+        return messageService.getAllMessages(closed, pageable);
+    }
+
     @GetMapping("/secure/search/message")
     public Page<Message> getUserMessages(@AuthenticationPrincipal Jwt jwt,
                                          Pageable pageable) {
@@ -74,7 +89,7 @@ public class MessageController {
         List<String> roles = jwt.getClaimAsStringList("https://exercise-library.com/roles");
         String admin = roles != null && !roles.isEmpty() ? roles.get(0) : null;
         if (admin == null || !admin.equals("admin")) {
-            throw new Exception("관리자만 가능합니다.");
+            throw new Exception("Administration page only");
         }
         messageService.putMessage(adminQuestionResponse, userEmail);
     }

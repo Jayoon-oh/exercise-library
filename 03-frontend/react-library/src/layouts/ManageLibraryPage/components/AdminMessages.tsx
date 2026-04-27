@@ -22,11 +22,19 @@ export const AdminMessages = () => {
 
     const [btnSubmit, setBtnSubmit] = useState(false);
 
+    // filter response
+    const [filter, setFilter] = useState<boolean | null>(null);
+
+
     useEffect(() => {
         const fetchUserMessages = async () => {
             if (isAuthenticated) {
                 const accessToken = await getAccessTokenSilently();
-                const url = `${process.env.REACT_APP_API}/messages/search/findByClosed?closed=false&page=${currentPage - 1}&size=${messagesPerPage}`;
+                let url = `${process.env.REACT_APP_API}/messages/secure/messages?page=${currentPage - 1}&size=${messagesPerPage}`;
+               if (filter  !== null) {
+                     url += `&closed=${filter}`;
+                }
+
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -40,17 +48,22 @@ export const AdminMessages = () => {
                 }
                 const messagesResponseJson = await messagesResponse.json();
 
-                setMessages(messagesResponseJson._embedded.messages);
-                setTotalPages(messagesResponseJson.page.totalPages);
+                setMessages(messagesResponseJson.content);
+                setTotalPages(messagesResponseJson.totalPages);
             }
             setIsLoadingMessages(false);
         }
+
+
+
         fetchUserMessages().catch((error: any) => {
             setIsLoadingMessages(false);
             setHttpError(error.message);
         })
         window.scrollTo(0, 0);
-    }, [isAuthenticated, getAccessTokenSilently, currentPage, btnSubmit]);
+    }, [isAuthenticated, getAccessTokenSilently, currentPage, btnSubmit, filter]);
+
+
 
     if (isLoadingMessages) {
         return (
@@ -90,13 +103,33 @@ export const AdminMessages = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+
     return (
         <div className="mt-3">
+                {/* tap button */}
+            <div className="mb-3">
+                <button 
+                    className={`btn btn-sm me-2 ${filter === null ? 'btn-primary' : 'btn-outline-primary'}`}
+                    onClick={() => {setFilter(null); setCurrentPage(1)}}>
+                    전체
+                </button>
+                <button 
+                    className={`btn btn-sm me-2 ${filter === false ? 'btn-warning' : 'btn-outline-warning'}`}
+                    onClick={() => {setFilter(false); setCurrentPage(1)}}>
+                    답변필요
+                </button>
+                <button 
+                    className={`btn btn-sm ${filter === true ? 'btn-success' : 'btn-outline-success'}`}
+                    onClick={() => {setFilter(true); setCurrentPage(1)}}>
+                    답변완료
+                </button>
+            </div>
+
             {messages.length > 0 ?
                 <>
                     <h5>대기중 Q/A</h5>
                     {messages.map(message => (
-                        <AdminMessage message={message} key={message.id} submitResponseToQuestion={submitResponseToQuestion} />
+                        <AdminMessage message={message} key={message.id} submitResponseToQuestion={submitResponseToQuestion}/>
                     ))}
                 </>
                 : <h5>대기중인 Q/A가 없습니다.</h5>
