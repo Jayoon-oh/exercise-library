@@ -11,8 +11,14 @@ export const BodyRecord = () => {
     const [thisMonthCount, setThisMonthCount] = useState<number>(0);
     const [weight, setWeight] = useState<number | string>('')
     const [height, setHeight] = useState<number | string>('')
-    const [saveSuccess, setSaveSuccess] = useState(false);
     const [bodyRecords, setBodyRecords] = useState<BodyRecordModel[]>([]);
+
+    const [saveSuccess, setSaveSuccess] = useState(false);
+    const [displayWarning, setDisplayWarning] = useState(false);
+
+    // optional 
+    const [muscleMass, setMuscleMass] = useState<number | null>(null);
+    const [bodyFatPercentage, setBodyFatPercentage] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -47,7 +53,7 @@ export const BodyRecord = () => {
                 const countMonthly = await response2.json();
                 setMonthlyCount(countMonthly);
 
-                // 3. count Muscle Group
+                // 3. count Muscle Group (Donut Graph)
                 const countMuscleGroupRes = `${process.env.REACT_APP_API}/histories/secure/MuscleGroupCount`;
                 const response3 = await fetch(countMuscleGroupRes, {
                     method: 'GET',
@@ -73,6 +79,7 @@ export const BodyRecord = () => {
                 if (!response4.ok) throw new Error('Failed to fetch count');
 
                 const bodyRecordsGraph = await response4.json();
+                console.log('bodyRecordsGraph', bodyRecordsGraph);
                 setBodyRecords(bodyRecordsGraph);
 
             } catch (error) {
@@ -83,9 +90,15 @@ export const BodyRecord = () => {
         if (user) {
             fetchStats();
         }
-    }, [user, getAccessTokenSilently]);
+    }, [user, getAccessTokenSilently, saveSuccess]);
 
     async function addBodyRecord() {
+        if (!weight || !height) {
+            setDisplayWarning(true);
+            return;
+        }
+        setDisplayWarning(false);
+
         const token = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/profiles/secure/bodyRecord`;
 
@@ -95,7 +108,10 @@ export const BodyRecord = () => {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ weight: Number(weight), height: Number(height) })
+            body: JSON.stringify({
+                weight: Number(weight), height: Number(height),
+                muscleMass: muscleMass, bodyFatPercentage: bodyFatPercentage
+            })
         };
 
         const response = await fetch(url, requestOptions)
@@ -123,6 +139,16 @@ export const BodyRecord = () => {
         weight: record.weight,
         height: record.height
     }));
+    console.log("bodyRecordChartData", bodyRecordsChartData);
+
+    // BMI Status
+    const getBmiStatus = (bmi: number | undefined) => {
+        if (!bmi) return { label: '측정 없음', color: 'text-muted' };
+        if (bmi < 18.5) return { label: '저체중', color: 'text-primary' };
+        if (bmi < 25) return { label: '정상', color: 'text-success' };
+        if (bmi < 30) return { label: '과체중', color: 'text-warning' };
+        return { label: '비만', color: 'text-danger' };
+    }
 
     return (
         <div className="row mt-4">
@@ -204,7 +230,10 @@ export const BodyRecord = () => {
 
             <div className="card bg-light p-3 mt-4">
                 <h5 className="card-title">몸무게 / 키 기록</h5>
-                <div className="row mt-3">
+
+                <div className="row mt-3">{displayWarning && (
+                    <div className="alert alert-danger">몸무게와 키를 입력해주세요.</div>
+                )}
                     {/* weight*/}
                     <div className="col-md-6 mb-3">
                         <label className="form-label">몸무게 (kg)</label>
@@ -226,6 +255,40 @@ export const BodyRecord = () => {
                             onChange={(e) => setHeight(e.target.value)}
                         />
                     </div>
+
+                    {/* muscle mass */}
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">골격근량 (kg)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={muscleMass ?? ''}
+                            onChange={(e) => setMuscleMass(e.target.value ? Number(e.target.value) : null)}
+                            placeholder="선택 입력"
+                        />
+                    </div>
+
+                    {/* body fat percentage */}
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">체지방률 (%)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={bodyFatPercentage ?? ''}
+                            onChange={(e) => setBodyFatPercentage(e.target.value ? Number(e.target.value) : null)}
+                            placeholder="선택 입력"
+                        />
+                    </div>
+
+                    {/* recent BMI/BMR recording*/}
+                    {bodyRecords.length > 0 && (
+                        <p>BMI: <strong>{bodyRecords[bodyRecords.length - 1].bmi}</strong>{' '}
+                            <span className={getBmiStatus(bodyRecords[bodyRecords.length - 1].bmi).color}>
+                                ({getBmiStatus(bodyRecords[bodyRecords.length - 1].bmi).label})
+                            </span>
+                        </p>
+                    )}
+
                 </div>
 
                 <button className="btn btn-success" onClick={addBodyRecord}>

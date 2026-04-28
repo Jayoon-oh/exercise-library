@@ -8,14 +8,13 @@ import lombok.Data;
 @Data
 public class BodyRecord {
 
-    public BodyRecord() {
-    }
+    public BodyRecord() {}
 
-    public BodyRecord(String userEmail, Double weight, Double height, String recordedDate) {
+    public BodyRecord(String userEmail, double weight, double height, String date) {
         this.userEmail = userEmail;
         this.weight = weight;
         this.height = height;
-        this.recordedDate = recordedDate;
+        this.recordedDate = date;
     }
 
     @Id
@@ -34,4 +33,17 @@ public class BodyRecord {
 
     @Column(name = "recorded_date")
     private String recordedDate;
+
+    @Column(name = "bmi")
+    private Double bmi;
+
+    @Column(name = "bmr")
+    private Double bmr;
+
+    @Column(name = "muscle_mass")
+    private Double muscleMass;
+
+    @Column(name = "body_fat_percentage")
+    private Double bodyFatPercentage;
+
 }

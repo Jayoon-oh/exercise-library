@@ -7,4 +7,8 @@ public class BodyRecordRequest {
     private Double weight;
 
     private Double height;
+
+    private Double muscleMass;
+
+    private Double bodyFatPercentage;
 }
