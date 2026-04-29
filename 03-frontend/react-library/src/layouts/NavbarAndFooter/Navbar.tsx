@@ -13,6 +13,7 @@ export const Navbar = () => {
     const { getAccessTokenSilently, user, isAuthenticated, loginWithRedirect, logout, getIdTokenClaims } = useAuth0();
     const [showModal, setShowModal] = useState(false);
     const [userSummary, setUserSummary] = useState<UserSummary | null>(null);
+    const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -23,6 +24,30 @@ export const Navbar = () => {
         };
 
         fetchRoles();
+
+        const fetchUnreadCount = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const url = `${process.env.REACT_APP_API}/messages/secure/unread/count`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                if (!response.ok) throw new Error('Failed to fetch count');
+
+                const count = await response.json();
+                setUnreadCount(count);
+            } catch (error) {
+                console.error("Erorr fetching unread count:", error);
+            }
+        };
+
+        if (isAuthenticated) {
+            fetchUnreadCount();
+        }
     }, [user, isAuthenticated, getIdTokenClaims]);
 
     if (loading) {
@@ -65,6 +90,29 @@ export const Navbar = () => {
         <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
             <div className='container-fluid'>
                 <span className='navbar-brand'>Gym rat 🏋️‍♀️</span>
+                {/* Mobile UI */}
+                {isAuthenticated && (
+                    <div className='d-flex align-items-center ms-auto me-2 d-lg-none'>
+                        <div style={{ position: 'relative', marginRight: '12px' }}>
+                            <span onClick={fetchUserSummary} style={{ fontSize: '20px', cursor: 'pointer' }}>🔔</span>
+                            {unreadCount > 0 && (
+                                <span style={{
+                                    position: 'absolute', top: '-4px', right: '-4px',
+                                    background: 'red', borderRadius: '50%',
+                                    width: '16px', height: '16px', fontSize: '10px',
+                                    color: 'white', display: 'flex',
+                                    alignItems: 'center', justifyContent: 'center'
+                                }}>{unreadCount}</span>
+                            )}
+                        </div>
+                        <img src={user?.picture} alt="Profile"
+                            className="rounded-circle" width="36"
+                            style={{ cursor: 'pointer' }}
+                            onClick={fetchUserSummary}
+                        />
+                    </div>
+                )}
+
                 <button className='navbar-toggler' type='button'
                     data-bs-toggle='collapse' data-bs-target='#navbarNavDropdown'
                     aria-controls='#navbarNavDr' aria-expanded='false'
@@ -103,7 +151,30 @@ export const Navbar = () => {
                                         <NavLink className='nav-link' to='/admin'>⚙️ 관리자 <span className="text-white-50 ms-2 me-2"></span></NavLink>
                                     </li>
                                 )}
-                                <li className='nav-item ms-2'>
+                                {/* Desktop UI message notification */}
+                                <li className='nav-item ms-2 d-none d-lg-block' style={{ position: 'relative' }}>
+                                    <span onClick={fetchUserSummary} style={{ fontSize: '20px', cursor: 'pointer' }}>🔔</span>
+                                    {unreadCount > 0 && (
+                                        <span style={{
+                                            position: 'absolute',
+                                            top: '-4px',
+                                            right: '-4px',
+                                            background: 'red',
+                                            borderRadius: '50%',
+                                            width: '16px',
+                                            height: '16px',
+                                            fontSize: '10px',
+                                            color: 'white',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </li>
+                                {/* profile img */}
+                                <li className='nav-item ms-2 d-none d-lg-block'>
                                     <img
                                         src={user?.picture}
                                         alt="Profile"

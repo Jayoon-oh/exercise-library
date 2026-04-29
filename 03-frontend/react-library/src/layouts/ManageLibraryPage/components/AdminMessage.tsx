@@ -32,7 +32,7 @@ export const AdminMessage: React.FC<{
                 {/* title + state */}
                 <div className="d-flex justify-content-between">
                     <h5>#{props.message.id}: {props.message.title}</h5>
-                    {props.message.closed 
+                    {props.message.closed
                         ? <span className="badge bg-success">답변완료</span>
                         : <span className="badge bg-danger">답변필요</span>
                     }
@@ -59,9 +59,8 @@ export const AdminMessage: React.FC<{
                                 </div>
                             }
                             <div className="col-md-12 mb-3">
-                                <label className="form-label">설명</label>
                                 <textarea className="form-control" rows={3}
-                                    onChange={e => setResponse(e.target.value)} 
+                                    onChange={e => setResponse(e.target.value)}
                                     value={response}>
                                 </textarea>
                             </div>
