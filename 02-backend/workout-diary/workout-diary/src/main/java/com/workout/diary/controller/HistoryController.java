@@ -1,13 +1,11 @@
 package com.workout.diary.controller;
 
+import com.workout.diary.entity.History;
 import com.workout.diary.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -40,5 +38,17 @@ public class HistoryController {
     public Map<String, Long> getMuscleGroupCount(@AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return historyService.getMuscleGroupCount(userEmail);
+    }
+
+    @GetMapping("/secure/WorkoutCalendar")
+    public List<History> getWorkoutHistory(@AuthenticationPrincipal Jwt jwt, @RequestParam String completedDate) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        return historyService.getWorkoutHistory(userEmail, completedDate);
+    }
+
+    @GetMapping("/secure/WorkoutCalendar/Month")
+    public List<String> getWorkoutHistoryByMonth(@AuthenticationPrincipal Jwt jwt, @RequestParam String yearMonth) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        return historyService.getWorkoutHistoryByMonth(userEmail, yearMonth);
     }
 }

@@ -90,6 +90,7 @@ export const Navbar = () => {
         <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
             <div className='container-fluid'>
                 <span className='navbar-brand'>Gym rat 🏋️‍♀️</span>
+                
                 {/* Mobile UI */}
                 {isAuthenticated && (
                     <div className='d-flex align-items-center ms-auto me-2 d-lg-none'>

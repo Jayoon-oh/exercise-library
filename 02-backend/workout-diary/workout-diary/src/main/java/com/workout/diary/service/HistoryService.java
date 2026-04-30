@@ -1,10 +1,12 @@
 package com.workout.diary.service;
 
+import com.workout.diary.entity.History;
 import com.workout.diary.repository.HistoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class HistoryService {
     private HistoryRepository historyRepository;
 
     @Autowired
-    public HistoryService (HistoryRepository historyRepository){
+    public HistoryService(HistoryRepository historyRepository) {
         this.historyRepository = historyRepository;
     }
 
@@ -49,11 +51,21 @@ public class HistoryService {
         List<Object[]> results = historyRepository.countByMuscleGroup(userEmail);
         Map<String, Long> muscleGroupMap = new HashMap<>();
 
-        for(Object[] row: results) {
+        for (Object[] row : results) {
             String muscleGroup = (String) row[0];
             Long count = (Long) row[1];
             muscleGroupMap.put(muscleGroup, count);
         }
         return muscleGroupMap;
+    }
+
+    //workout list for specific Date on Calendar
+    public List<History> getWorkoutHistory(String userEmail, String completedDate) {
+        return historyRepository.findByUserEmailAndCompletedDate(userEmail, completedDate);
+    }
+
+    // completed workout list per month (for checking Calendar ex.Apr, May)
+    public List<String> getWorkoutHistoryByMonth(String userEmai, String yearMonth) {
+        return historyRepository.findByCompletedDatesByUserEmailAndMonth(userEmai, yearMonth);
     }
 }

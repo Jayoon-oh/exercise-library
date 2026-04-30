@@ -67,7 +67,7 @@ export const ManageLibraryPage = () => {
                         <button onClick={messagesClickFunction} className="nav-link" id='nav-messages-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-messages' type='button' role='tab' aria-controls='nav-messages'
                             aria-selected='true'>
-                            문의 답변하기
+                            문의 답변
                         </button>
                     </div>
                 </nav>

@@ -19,4 +19,12 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
             "WHERE h.userEmail = :userEmail " +
             "GROUP BY h.muscleGroup")
     List<Object[]> countByMuscleGroup(@Param("userEmail") String userEmail);
+
+    // workout list for specific Date on Calendar
+    List<History> findByUserEmailAndCompletedDate(String userEmail, String completedDate);
+
+    // completed workout list per month (for checking Calendar ex.Apr, May)
+    @Query("SELECT DISTINCT h.completedDate FROM History h WHERE h.userEmail = :userEmail AND h.completedDate LIKE CONCAT(:yearMonth, '%')")
+    List<String> findByCompletedDatesByUserEmailAndMonth(@Param("userEmail") String userEmail, @Param("yearMonth") String yearMonth);
+
 }

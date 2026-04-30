@@ -4,6 +4,7 @@ import HistoryModel from "../../../models/HistoryModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 import { Link } from "react-router-dom";
 import { Pagination } from "../../Utils/Pagination";
+import { WorkoutCalendar } from './WorkoutCalendar';
 
 export const HistoryPage = () => {
 
@@ -21,7 +22,7 @@ export const HistoryPage = () => {
     useEffect(() => {
         const fetchUserHistory = async () => {
             if (isAuthenticated) {
-                // 24라인 부근 수정
+
                 const url = `${process.env.REACT_APP_API}/histories/search/findByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
                 const requestOptions = {
                     method: 'GET',
@@ -76,6 +77,10 @@ export const HistoryPage = () => {
 
     return (
         <div className="mt-2">
+            {/* Calendar */}
+            <div className="card p-3 mb-4">
+                <WorkoutCalendar />
+            </div>
             {Histories.length > 0 ?
                 <>
                     <h5>최근  기록</h5>
