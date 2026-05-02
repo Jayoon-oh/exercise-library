@@ -77,8 +77,9 @@ export const HistoryPage = () => {
 
     return (
         <div className="mt-2">
-            {/* Calendar */}
+            {/*Calendar */}
             <div className="card p-3 mb-4">
+                <h5 className="card-title">운동 달력</h5>
                 <WorkoutCalendar />
             </div>
             {Histories.length > 0 ?

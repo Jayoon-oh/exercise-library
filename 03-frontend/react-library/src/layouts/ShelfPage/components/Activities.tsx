@@ -4,6 +4,7 @@ import ShelfCurrentActivities from '../../../models/ShelfCurrentActivities';
 import { SpinnerLoading } from '../../Utils/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { ActivitiesModal } from './ActivitiesModal';
+import { AddRoutineModal } from './AddRoutineModal';
 
 export const Activies = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -16,6 +17,7 @@ export const Activies = () => {
     // Checkbox
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
+    const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
         const fetchUserCurrentActivities = async () => {
@@ -98,10 +100,8 @@ export const Activies = () => {
             alert("완료할 운동을 선택해주세요.")
             return;
         }
-
         const url = `${process.env.REACT_APP_API}/workouts/secure/complete`;
         const accessToken = await getAccessTokenSilently();
-
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -141,6 +141,20 @@ export const Activies = () => {
                     <>
                         <div className='d-flex justify-content-between align-items-center mb-4'>
                             <h5>오늘 운동 루틴</h5>
+                            <div className='d-flex gap-2'>
+                                <button className='btn btn-primary' onClick={() => setShowAddModal(true)}>
+                                    + 운동 추가
+                                </button>
+                                {showAddModal && (
+                                    <AddRoutineModal
+                                        onClose={() => setShowAddModal(false)}
+                                        onAdd={() => {
+                                            setShowAddModal(false);
+                                            setActivate(!activate);  // Refresh routine list
+                                        }}
+                                    />
+                                )}
+                            </div>
                             {/* 전체 완료 버튼 구현예정 */}
                             <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
@@ -227,6 +241,20 @@ export const Activies = () => {
                     <>
                         <div className='d-flex justify-content-between align-items-center mb-4'>
                             <h5>오늘 운동 루틴</h5>
+                            <div className='d-flex gap-2'>
+                                <button className='btn btn-primary' onClick={() => setShowAddModal(true)}>
+                                    + 운동 추가
+                                </button>
+                                {showAddModal && (
+                                    <AddRoutineModal
+                                        onClose={() => setShowAddModal(false)}
+                                        onAdd={() => {
+                                            setShowAddModal(false);
+                                            setActivate(!activate);  // Refresh routine list
+                                        }}
+                                    />
+                                )}
+                            </div>
                             <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
                             </button>
