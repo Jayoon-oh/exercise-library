@@ -47,8 +47,8 @@ public class HistoryController {
     }
 
     @GetMapping("/secure/WorkoutCalendar/Month")
-    public List<String> getWorkoutHistoryByMonth(@AuthenticationPrincipal Jwt jwt, @RequestParam String yearMonth) {
+    public List<String> getWorkoutHistoryByRange(@AuthenticationPrincipal Jwt jwt, @RequestParam String startDate, @RequestParam String endDate) {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
-        return historyService.getWorkoutHistoryByMonth(userEmail, yearMonth);
+        return historyService.getWorkoutHistoryByMonth(userEmail, startDate, endDate);
     }
 }

@@ -24,7 +24,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findByUserEmailAndCompletedDate(String userEmail, String completedDate);
 
     // completed workout list per month (for checking Calendar ex.Apr, May)
-    @Query("SELECT DISTINCT h.completedDate FROM History h WHERE h.userEmail = :userEmail AND h.completedDate LIKE CONCAT(:yearMonth, '%')")
-    List<String> findByCompletedDatesByUserEmailAndMonth(@Param("userEmail") String userEmail, @Param("yearMonth") String yearMonth);
+    @Query("SELECT DISTINCT h.completedDate FROM History h WHERE h.userEmail = :userEmail AND h.completedDate BETWEEN :startDate AND :endDate")
+    List<String> findByCompletedDatesByUserEmailAndMonth(@Param("userEmail") String userEmail, @Param("startDate") String startDate, @Param("endDate") String endDate);
 
 }

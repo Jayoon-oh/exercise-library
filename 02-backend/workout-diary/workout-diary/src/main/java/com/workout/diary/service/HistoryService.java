@@ -65,7 +65,7 @@ public class HistoryService {
     }
 
     // completed workout list per month (for checking Calendar ex.Apr, May)
-    public List<String> getWorkoutHistoryByMonth(String userEmai, String yearMonth) {
-        return historyRepository.findByCompletedDatesByUserEmailAndMonth(userEmai, yearMonth);
+    public List<String> getWorkoutHistoryByMonth(String userEmail, String startDate, String endDate) {
+        return historyRepository.findByCompletedDatesByUserEmailAndMonth(userEmail, startDate, endDate);
     }
 }

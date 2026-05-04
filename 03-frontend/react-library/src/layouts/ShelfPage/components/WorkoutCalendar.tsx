@@ -12,14 +12,22 @@ export const WorkoutCalendar = () => {
     const [completedDates, setCompletedDates] = useState<String[]>([]);
     const [dailyWorkouts, setDailyWorkouts] = useState<HistoryModel[]>([]);
 
+    const [activeStartDate, setActiveStartDate] = useState(new Date());
+
     useEffect(() => {
         const fetchCompletedDates = async () => {
             if (isAuthenticated) {
-                const now = new Date();
-                const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // make 2 digit ex.04
+                const start = new Date(activeStartDate);
+                start.setDate(start.getDate() - 7); // Include previous month
+                const end = new Date(activeStartDate);
+                end.setMonth(end.getMonth() + 1);
+                end.setDate(end.getDate() + 7); // Include next month
+
+                const startDate = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')}`;
+                const endDate = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`; // make 2 digit ex.04
 
                 const accessToken = await getAccessTokenSilently();
-                const url = `${process.env.REACT_APP_API}/histories/secure/WorkoutCalendar/Month?yearMonth=${yearMonth}`;
+                const url = `${process.env.REACT_APP_API}/histories/secure/WorkoutCalendar/Month?startDate=${startDate}&endDate=${endDate}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -28,15 +36,12 @@ export const WorkoutCalendar = () => {
                     }
                 };
                 const datesResponse = await fetch(url, requestOptions);
-                if (!datesResponse.ok) {
-                    throw new Error('Something went wrong');
-                }
                 const datesResponseJson = await datesResponse.json();
                 setCompletedDates(datesResponseJson);
             }
         }
         fetchCompletedDates();
-    }, [user, isAuthenticated])
+    }, [user, isAuthenticated, activeStartDate])
 
     const handleDateClick = async (date: Date) => {
         if (date === undefined) {
@@ -44,7 +49,6 @@ export const WorkoutCalendar = () => {
         }
         const completedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         setSelectedDate(completedDate);
-
         const accessToken = await getAccessTokenSilently()
         const url = `${process.env.REACT_APP_API}/histories/secure/WorkoutCalendar?completedDate=${completedDate}`;
         const requestOptions = {
@@ -66,9 +70,15 @@ export const WorkoutCalendar = () => {
     return (
         <div className="row">
             <div className="col-md-5">
-                <h5>운동 달력</h5>
+                <h5>운동 달력</h5> 
                 <Calendar
                     onClickDay={handleDateClick}
+                    activeStartDate={activeStartDate}
+                    onActiveStartDateChange={({ activeStartDate }) => {
+                        if (activeStartDate) {
+                            setActiveStartDate(activeStartDate);
+                        }
+                    }}
                     tileContent={({ date }) => {
                         // date format '2000-01-01'
                         const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
