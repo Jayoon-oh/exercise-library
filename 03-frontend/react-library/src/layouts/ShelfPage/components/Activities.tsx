@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ActivitiesModal } from './ActivitiesModal';
 import { AddRoutineModal } from './AddRoutineModal';
 import { WorkoutTimer } from './WorkoutTImer';
+import { MemoModal } from './MemoModal';
 
 export const Activies = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -19,6 +20,7 @@ export const Activies = () => {
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddMemo, setShowAddMemo] = useState(false);
 
     useEffect(() => {
         const fetchUserCurrentActivities = async () => {
@@ -96,7 +98,7 @@ export const Activies = () => {
         setActivate(!activate);
     }
 
-    async function completeWorkouts() {
+    async function completeWorkouts(memo: string) {
         if (checkedIds.length === 0) {
             alert("완료할 운동을 선택해주세요.")
             return;
@@ -109,7 +111,7 @@ export const Activies = () => {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(checkedIds)
+            body: JSON.stringify({ workoutIds: checkedIds, memo: memo })
         };
 
         const response = await fetch(url, requestOptions);
@@ -158,9 +160,19 @@ export const Activies = () => {
                                         }}
                                     />
                                 )}
+                                {showAddMemo
+                                    && (
+                                        <MemoModal
+                                            onClose={() => setShowAddMemo(false)}
+                                            onComplete={(memo) => {
+                                                completeWorkouts(memo);
+                                                setShowAddMemo(false);
+                                            }}
+                                        />
+                                    )}
                             </div>
                             {/* 전체 완료 버튼 구현예정 */}
-                            <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
+                            <button className='btn btn-success fw-bold' onClick={() => setShowAddMemo(true)}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
                             </button>
                         </div>
@@ -259,8 +271,17 @@ export const Activies = () => {
                                         }}
                                     />
                                 )}
+                                {showAddMemo && (
+                                    <MemoModal
+                                        onClose={() => setShowAddMemo(false)}
+                                        onComplete={(memo) => {
+                                            completeWorkouts(memo);
+                                            setShowAddMemo(false);
+                                        }}
+                                    />
+                                )}
                             </div>
-                            <button className='btn btn-success fw-bold' onClick={completeWorkouts}>
+                            <button className='btn btn-success fw-bold' onClick={() => setShowAddMemo(true)}>
                                 운동 완료 ({checkedIds.length} / {shelfCurrentActivities.length})
                             </button>
                         </div>

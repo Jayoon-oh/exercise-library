@@ -5,6 +5,7 @@ import com.workout.diary.repository.*;
 import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
+import com.workout.diary.requestmodels.CompleteWorkoutRequest;
 import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,7 +106,7 @@ public class WorkoutService {
             return shelfCurrentActivitiesResponses;
         }
 
-        public void completeWorkouts(String userEmail, List<Long> workoutIds) throws Exception {
+        public void completeWorkouts(String userEmail, List<Long> workoutIds, String memo) throws Exception {
             List<ActiveRoutine> activeRoutines = activeRoutineRepository.findByUserEmailAndWorkoutIds(userEmail, workoutIds);
 
             if (activeRoutines.isEmpty()) {
@@ -130,13 +131,12 @@ public class WorkoutService {
                         routine.getMaxReps(),
                         routine.getMaxSets(),
                         routine.getMaxSets(),
-                        workout.getMuscleGroup()
+                        workout.getMuscleGroup(),
+                        memo
                 );
                 historyList.add(history);
             }
             historyRepository.saveAll(historyList);
-
-            activeRoutineRepository.deleteAll(activeRoutines);
 
             pointsService.addPoints(userEmail, PointsConstants.WORKOUT_COMPLETE_POINTS, PointsConstants.WORKOUT_COMPLETE_MSG);
         }
@@ -152,19 +152,6 @@ public class WorkoutService {
 
             activeRoutineRepository.deleteById(validateActive.getId());
 
-            History history = new History(
-                    userEmail,
-                    validateActive.getStartDate(),
-                    LocalDate.now().toString(),
-                    workout.get().getTitle(),
-                    workout.get().getSource(),
-                    workout.get().getDescription(),
-                    workout.get().getImg(),
-                    0, 0,0,
-                    workout.get().getMuscleGroup()
-            );
-
-            historyRepository.save(history);
         }
 
         public void extendDays(String userEmail, Long workoutId) throws Exception {
@@ -184,7 +171,6 @@ public class WorkoutService {
                 activeRoutineRepository.save(validateActive);
             }
         }
-
 
     }
 

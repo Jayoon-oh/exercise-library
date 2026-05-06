@@ -10,9 +10,10 @@ class HistoryModel {
     actualSets: number;
     actualReps: number;
     targetSets: number;
+    workoutMemo: string;
 
     constructor(id: number, userEmail: string, startDate: string, completedDate: string, title: string,
-        source: string, description: string, img: string, actualSets: number, actualReps: number, targetSets: number) {
+        source: string, description: string, img: string, actualSets: number, actualReps: number, targetSets: number, workoutMemo: string) {
         this.id = id;
         this.userEmail = userEmail;
         this.startDate = startDate;
@@ -24,6 +25,7 @@ class HistoryModel {
         this.actualReps = actualReps;
         this.actualSets = actualSets;
         this.targetSets = targetSets;
+        this.workoutMemo = workoutMemo;
     }
 }
 

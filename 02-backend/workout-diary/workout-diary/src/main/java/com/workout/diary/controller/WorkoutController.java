@@ -3,6 +3,7 @@ package com.workout.diary.controller;
 
 import com.workout.diary.entity.ActiveRoutine;
 import com.workout.diary.entity.Workout;
+import com.workout.diary.requestmodels.CompleteWorkoutRequest;
 import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.service.WorkoutService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +56,9 @@ public class WorkoutController {
 
     @PutMapping("/secure/complete")
     public void completeWorkouts(@AuthenticationPrincipal Jwt jwt,
-                                 @RequestBody List<Long> workoutIds) throws Exception {
+                                 @RequestBody CompleteWorkoutRequest request) throws Exception {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
-        workoutService.completeWorkouts(userEmail, workoutIds);
+        workoutService.completeWorkouts(userEmail, request.getWorkoutIds(), request.getMemo());
     }
 
     @PutMapping("/secure/cancel")
