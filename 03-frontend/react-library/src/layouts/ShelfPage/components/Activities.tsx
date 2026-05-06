@@ -5,6 +5,7 @@ import { SpinnerLoading } from '../../Utils/SpinnerLoading';
 import { Link } from 'react-router-dom';
 import { ActivitiesModal } from './ActivitiesModal';
 import { AddRoutineModal } from './AddRoutineModal';
+import { WorkoutTimer } from './WorkoutTImer';
 
 export const Activies = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -209,6 +210,7 @@ export const Activies = () => {
                                                                 <span className='text-danger fw-bold'>기간만료</span>
                                                             )}
                                                         </div>
+                                                        <WorkoutTimer workoutId={shelfCurrentActivity.workout.id} />
                                                     </div>
 
                                                     <div className='d-flex gap-2 mt-3'>
@@ -308,6 +310,7 @@ export const Activies = () => {
                                                                 <span className='text-danger fw-bold'>만료</span>
                                                             )}
                                                         </div>
+                                                        <WorkoutTimer workoutId={shelfCurrentActivity.workout.id} />
                                                     </div>
 
                                                     <div className='d-flex gap-2 mt-3'>
