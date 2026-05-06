@@ -123,14 +123,17 @@ export const Activies = () => {
 
     // 이미지 경로 처리 함수
     const getWorkoutImage = (imgName?: string) => {
-        try {
-            if (imgName) {
-                return require(`./../../../Images/ExerciseImages/${imgName}`);
-            }
-        } catch (error) {
-            // 이미지 로드 실패 시 기본 이미지
+        if (!imgName) return require('./../../../Images/ExerciseImages/barbellrow.jpg');
+
+        if (imgName.startsWith('data:')) {
+            return imgName;
         }
-        return require('./../../../Images/ExerciseImages/barbellrow.jpg');
+
+        try {
+            return require(`./../../../Images/ExerciseImages/${imgName}`);
+        } catch (error) {
+            return require('./../../../Images/ExerciseImages/barbellrow.jpg');
+        }
     };
 
     return (
