@@ -60,12 +60,13 @@ public class UserSummaryService {
                         new UserSummaryResponse.TodayWorkout(
                                 workout.getTitle(),
                                 routine.getMaxReps(),
-                                routine.getMaxSets()
+                                routine.getMaxSets(),
+                                workout.getImg()
                         )
                 );
             }
         }
 
-        return new UserSummaryResponse(unreadCount, points, todayWorkouts);
+        return new UserSummaryResponse(unreadCount, points, todayWorkouts, todayWorkouts.size());
     }
 }
