@@ -5,13 +5,15 @@ import com.workout.diary.entity.History;
 import com.workout.diary.entity.UserPoints;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.repository.*;
-import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
 import com.workout.diary.responsemodels.UserSummaryResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,13 +23,15 @@ public class UserSummaryService {
     private UserPointsRepository userPointsRepository;
     private ActiveRoutineRepository activeRoutineRepository;
     private WorkoutRepository workoutRepository;
+    private HistoryRepository historyRepository;
 
     public UserSummaryService(MessageRepository messageRepository, UserPointsRepository userPointsRepository, ActiveRoutineRepository activeRoutineRepository,
-                              WorkoutRepository workoutRepository) {
+                              WorkoutRepository workoutRepository, HistoryRepository historyRepository) {
         this.messageRepository = messageRepository;
         this.userPointsRepository = userPointsRepository;
         this.activeRoutineRepository = activeRoutineRepository;
         this.workoutRepository = workoutRepository;
+        this.historyRepository = historyRepository;
     }
 
     public UserSummaryResponse userSummary (String userEmail) {
@@ -67,6 +71,18 @@ public class UserSummaryService {
             }
         }
 
-        return new UserSummaryResponse(unreadCount, points, todayWorkouts, todayWorkouts.size());
+        // 5. get recent memo
+        Pageable pageable = PageRequest.of(0,3);
+        List<History> recentHistory = historyRepository.findRecentMemosWithLimit(userEmail, pageable);
+
+        List<String> recentMemo = recentHistory.stream()
+                .map(History::getWorkoutMemo)
+                .collect(Collectors.toList());
+
+        List<String> recentMemoDate = recentHistory.stream()
+                .map(History::getCompletedDate)
+                .collect(Collectors.toList());
+
+        return new UserSummaryResponse(unreadCount, points, todayWorkouts, todayWorkouts.size(), recentMemo, recentMemoDate);
     }
 }

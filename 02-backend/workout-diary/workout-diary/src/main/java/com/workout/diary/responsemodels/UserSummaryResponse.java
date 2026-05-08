@@ -28,12 +28,17 @@ public class UserSummaryResponse {
     private int points;
     private List<TodayWorkout> todayWorkouts;
     private int todayRoutineCount;
+    private List<String> recentMemos;
+    private List<String> recentMemoDates;
 
-    public UserSummaryResponse(int unreadMessageCount, int points, List<TodayWorkout> todayWorkouts, int todayRoutineCount) {
+    public UserSummaryResponse(int unreadMessageCount, int points, List<TodayWorkout> todayWorkouts, int todayRoutineCount,
+                               List<String> recentMemos, List<String> recentMemoDates) {
         this.unreadMessageCount = unreadMessageCount;
         this.points = points;
         this.todayWorkouts = todayWorkouts;
         this.todayRoutineCount = todayRoutineCount;
+        this.recentMemos = recentMemos;
+        this.recentMemoDates = recentMemoDates;
     }
 }
 

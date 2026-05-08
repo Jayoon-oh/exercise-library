@@ -17,12 +17,18 @@ class UserSummary {
     points: number;
     todayWorkouts: TodayWorkout[];
     todayRoutineCount: number;
+    recentMemos: string[];
+    recentMemoDates: string[];
 
-    constructor(unreadMessageCount: number, points: number, todayWorkouts: TodayWorkout[], todayRoutineCount: number) {
+    constructor(unreadMessageCount: number, points: number, todayWorkouts: TodayWorkout[], todayRoutineCount: number,
+        recentMemos: string[], recentMemoDates: string[]
+    ) {
         this.unreadMessageCount = unreadMessageCount;
         this.points = points;
         this.todayWorkouts = todayWorkouts;
         this.todayRoutineCount = todayRoutineCount;
+        this.recentMemos = recentMemos;
+        this.recentMemoDates = recentMemoDates;
     }
 }
 
