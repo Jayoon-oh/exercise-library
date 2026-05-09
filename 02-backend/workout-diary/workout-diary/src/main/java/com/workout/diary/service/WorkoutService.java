@@ -130,6 +130,7 @@ public class WorkoutService {
                         workout.getImg(),
                         routine.getMaxReps(),
                         routine.getMaxSets(),
+                        routine.getMaxReps(),
                         routine.getMaxSets(),
                         workout.getMuscleGroup(),
                         memo

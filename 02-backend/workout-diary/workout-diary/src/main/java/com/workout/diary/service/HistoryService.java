@@ -4,6 +4,8 @@ import com.workout.diary.entity.History;
 import com.workout.diary.repository.HistoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -22,6 +24,10 @@ public class HistoryService {
     @Autowired
     public HistoryService(HistoryRepository historyRepository) {
         this.historyRepository = historyRepository;
+    }
+
+    public Page<History> getUserHistories(String userEmail, Pageable pageable) {
+        return historyRepository.findByUserEmail(userEmail, pageable);
     }
 
     // 당월 운동 수

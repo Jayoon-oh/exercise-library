@@ -3,6 +3,8 @@ package com.workout.diary.controller;
 import com.workout.diary.entity.History;
 import com.workout.diary.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,12 @@ public class HistoryController {
     @Autowired
     public HistoryController(HistoryService historyService) {
         this.historyService= historyService;
+    }
+
+    @GetMapping("/secure/workoutHistories")
+    public Page<History> getUserHistories(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+        String userEmail = jwt.getClaim("https://exercise-library.com/email");
+        return historyService.getUserHistories(userEmail, pageable);
     }
 
     @GetMapping("/secure/thisMonthCount")

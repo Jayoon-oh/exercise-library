@@ -5,6 +5,7 @@ import { Heros } from "./components/Heros"
 import { WorkoutServices } from "./components/WorkoutServies"
 import { TodayRoutineSummary } from "./components/TodayRoutineSummary"
 import { WeeklyProgress } from "./components/WeeklyProgress"
+import { RecentHistory } from "./components/RecentHistory"
 
 export const HomePage = () => {
     const { isAuthenticated } = useAuth0();
@@ -15,13 +16,13 @@ export const HomePage = () => {
                 <div className="container mt-4">
                     <WeeklyProgress />
                     <TodayRoutineSummary />
+                    <RecentHistory />
                 </div>
             ) : (
                 <ExploreTopWorkouts />
 
             )}
             <Carousel />
-            <Heros />
             <WorkoutServices />
         </>
     )

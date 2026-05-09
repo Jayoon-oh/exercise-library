@@ -11,7 +11,7 @@ public class History {
     public History (){}
 
     public History(String userEmail, String startDate, String completedDate,
-                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetSets, String muscleGroup, String workoutMemo) {
+                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetReps, Integer targetSets,  String muscleGroup, String workoutMemo) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.completedDate = completedDate;
@@ -21,6 +21,7 @@ public class History {
         this.img = img;
         this.actualReps = actualReps;
         this.actualSets = actualSets;
+        this.targetReps = targetReps;
         this.targetSets = targetSets;
         this.muscleGroup = muscleGroup;
         this.workoutMemo = workoutMemo;
@@ -52,11 +53,14 @@ public class History {
     @Column(name = "img")
     private String img;
 
+    @Column(name = "actual_reps")
+    private Integer actualReps;
+
     @Column(name = "actual_sets")
     private Integer actualSets;
 
-    @Column(name = "actual_reps")
-    private Integer actualReps;
+    @Column(name = "target_reps")
+    private Integer targetReps;
 
     @Column(name = "target_sets")
     private Integer targetSets;

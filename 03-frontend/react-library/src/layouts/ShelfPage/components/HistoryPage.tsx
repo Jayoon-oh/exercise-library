@@ -8,12 +8,12 @@ import { WorkoutCalendar } from './WorkoutCalendar';
 
 export const HistoryPage = () => {
 
-    const { isAuthenticated, user } = useAuth0();
+    const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
     const [isLoadingHistory, setIsLoadingHistory] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
     // Histories
-    const [Histories, setHistories] = useState<HistoryModel[]>([]);
+    const [histories, setHistories] = useState<HistoryModel[]>([]);
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,10 +23,12 @@ export const HistoryPage = () => {
         const fetchUserHistory = async () => {
             if (isAuthenticated) {
 
-                const url = `${process.env.REACT_APP_API}/histories/search/findByUserEmail?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
+                const url = `${process.env.REACT_APP_API}/histories/secure/workoutHistories?userEmail=${user?.email}&page=${currentPage - 1}&size=5`;
+                const token = await getAccessTokenSilently();
                 const requestOptions = {
                     method: 'GET',
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 };
@@ -36,8 +38,8 @@ export const HistoryPage = () => {
                 }
                 const historyResponseJson = await historyResponse.json();
 
-                setHistories(historyResponseJson._embedded.histories);
-                setTotalPages(historyResponseJson.page.totalPages);
+                setHistories(historyResponseJson.content);
+                setTotalPages(historyResponseJson.totalPages);
             }
             setIsLoadingHistory(false);
 
@@ -81,11 +83,11 @@ export const HistoryPage = () => {
             <div className="card p-3 mb-4">
                 <WorkoutCalendar />
             </div>
-            {Histories.length > 0 ?
+            {histories.length > 0 ?
                 <>
                     <h5>최근  기록</h5>
 
-                    {Histories.map(history => (
+                    {histories.map(history => (
                         <div key={history.id}>
                             <div className="card mt-3 shadow p-3 mb-3 bg-body rounded">
                                 <div className="row g-0">
