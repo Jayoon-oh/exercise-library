@@ -350,15 +350,14 @@ export const ActiveWorkoutPage = () => {
 
 
     return (
-        <div>
+        <div className="container mt-5 my-5">
 
-            {/* Desktop version */}
-            <div className='container d-none d-lg-block'>
-                <div className='row mt-5'>
-                    <div className='col-sm-2 col-md-2'>
-                        <img src={workoutImage} width='226' height='349' alt='Workout' />
+            <div className='card shadow-sm p-4'>
+                <div className='row'>
+                    <div className='col-12 col-md-3 text-center'>
+                        <img src={workoutImage} className='img-fluid rounded shadow' style={{ maxHeight: '349px', objectFit: 'cover', width: '100%' }} alt='Workout' />
                     </div>
-                    <div className='col-4 col-md-4 container'>
+                    <div className='col-12 col-md-4 container mt-3 mt-md-0'>
                         <div className='ml-2'>
                             <h2>{workout?.title}</h2>
                             <h5 className='text-primary'>{workout?.source}</h5>
@@ -366,9 +365,9 @@ export const ActiveWorkoutPage = () => {
                             <StarsReview rating={totalStars} size={32} />
                         </div>
                     </div>
-                    <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
+                    <ActivePageReviewBox workout={workout} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
                 </div>
-                <hr />
+                <LatestReviews reviews={reviews} workoutId={workout?.id} userEmail={user?.email} updateReview={updateReview} deleteReview={deleteReview} />
 
                 {displaySuccess && (
                     <div className="alert alert-success mt-3" role="alert">
@@ -376,25 +375,6 @@ export const ActiveWorkoutPage = () => {
                     </div>
                 )}
 
-                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={false} userEmail={user?.email} updateReview={updateReview} deleteReview={deleteReview} />
-            </div>
-
-            {/* mobile version*/}
-            <div className='container d-lg-none mt-5'>
-                <div className='d-flex justify-content-center align-items-center'>
-                    <img src={workoutImage} width='226' height='349' alt='Workout' />
-                </div>
-                <div className='mt-4'>
-                    <div className='ml-2'>
-                        <h2>{workout?.title}</h2>
-                        <h5 className='text-primary'>{workout?.source}</h5>
-                        <p className='lead'>{workout?.description}</p>
-                        <StarsReview rating={totalStars} size={32} />
-                    </div>
-                </div>
-                <ActivePageReviewBox workout={workout} mobile={false} currentActivitiesCount={currentActivitiesCount} isAuthenticated={isAuthenticated} isActivated={isActivated} isReviewLeft={isReviewLeft} activeWorkout={activeWorkout} submitReview={submitReview} activeDetails={activeDetails} />
-                <hr />
-                <LatestReviews reviews={reviews} workoutId={workout?.id} mobile={true} userEmail={user?.email} updateReview={updateReview} deleteReview={deleteReview} />
             </div>
         </div>
     );

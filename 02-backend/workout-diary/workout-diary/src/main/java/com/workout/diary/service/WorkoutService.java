@@ -155,23 +155,5 @@ public class WorkoutService {
 
         }
 
-        public void extendDays(String userEmail, Long workoutId) throws Exception {
-            ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
-
-            if (validateActive  == null) {
-                throw new Exception("Workout does not exist or not checked out by user");
-            }
-
-            SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-            Date d1 = sdFormat.parse(validateActive.getEndDate());
-            Date d2 = sdFormat.parse(validateActive.getStartDate());
-
-            if (d1.compareTo(d2) > 0 || d1.compareTo(d2) == 0) {
-                validateActive.setEndDate(LocalDate.now().plusDays(7).toString());
-                activeRoutineRepository.save(validateActive);
-            }
-        }
-
     }
 

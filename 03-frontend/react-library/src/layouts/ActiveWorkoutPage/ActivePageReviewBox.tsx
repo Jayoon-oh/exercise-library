@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import ShelfCurrentActivities from "../../models/ShelfCurrentActivities"
 
 
-export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, mobile: boolean, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any, activeDetails: ShelfCurrentActivities | null }> = (props) => {
+export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, currentActivitiesCount: number, isAuthenticated: any, isActivated: boolean, activeWorkout: any, isReviewLeft: boolean, submitReview: any, activeDetails: ShelfCurrentActivities | null }> = (props) => {
 
     const [sets, setSets] = useState(props.workout?.recommendedSets || 5);
     const [reps, setReps] = useState(12);
@@ -56,7 +56,7 @@ export const ActivePageReviewBox: React.FC<{ workout: WorkoutModel | undefined, 
     }
 
     return (
-        <div className={props.mobile ? 'card d-flex mt-5' : 'card col-3 container d-flex mb-5'}>
+        <div className='card col-12 col-md-3 container d-flex mb-5 mt-3 mt-md-0'>
             <div className='card-body container'>
                 <div className='mt-3'>
                     <p>

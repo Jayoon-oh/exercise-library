@@ -40,7 +40,7 @@ public class UserSummaryService {
 
         // 2. total Points
         UserPoints userPoints = userPointsRepository.findByUserEmail(userEmail);
-        int points = userPoints.getTotalPoints();
+        int points = userPoints != null ? userPoints.getTotalPoints() : 0;
 
         // 3. to do workout list for the day
         List<ActiveRoutine> activeRoutines = activeRoutineRepository.findWorkoutsByUserEmail(userEmail);

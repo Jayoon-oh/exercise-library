@@ -24,7 +24,7 @@ export const UserSummaryModal: React.FC<Props> = ({ userSummary, onClose, onLogo
 
             {/* Modal */}
             <div style={{
-                position: 'absolute', right: '16px', top: '60px',
+                position: 'fixed', right: '16px', top: '60px',
                 background: 'white', borderRadius: '12px',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                 padding: '16px', minWidth: '220px', zIndex: 1000,

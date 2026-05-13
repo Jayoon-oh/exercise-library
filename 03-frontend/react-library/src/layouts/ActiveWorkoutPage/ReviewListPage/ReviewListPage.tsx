@@ -156,7 +156,7 @@ export const ReviewListPage = () => {
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
-        <div className="container m-5">
+        <div className="container-fluid my-3 my-md-5 px-3">
             {displaySuccess && (
                 <div className="alert alert-success" role="alert">
                     리뷰가 처리되었습니다.
@@ -187,7 +187,7 @@ export const ReviewListPage = () => {
                             <div className="card p-2 shadow-sm">
                                 <Review review={review} />
                                 {isAuthenticated && user?.email === review.userEmail && (
-                                    <div className="d-flex justify-content-end">
+                                    <div className="d-flex justify-content-end gap-2 mt-1 flex-wrap">
                                         <button className="btn btn-sm btn-outline-primary" onClick={() => startEdit(review)}>수정</button>
                                         <button className="btn btn-sm btn-outline-danger" onClick={() => deleteReview(review.id)}>
                                             삭제

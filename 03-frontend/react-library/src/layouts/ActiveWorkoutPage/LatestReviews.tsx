@@ -5,7 +5,7 @@ import { useState } from "react";
 import { StarsReview } from "../Utils/StarsReview"
 
 export const LatestReviews: React.FC<{
-    reviews: ReviewModel[], workoutId: number | undefined, mobile: boolean, userEmail: string | undefined, updateReview: (StarInput: number, reviewDescription: string) => Promise<void>,
+    reviews: ReviewModel[], workoutId: number | undefined, userEmail: string | undefined, updateReview: (StarInput: number, reviewDescription: string) => Promise<void>,
     deleteReview: (reviewId: number) => Promise<void>
 }> = (props) => {
 
@@ -26,11 +26,11 @@ export const LatestReviews: React.FC<{
 
 
     return (
-        <div className={props.mobile ? 'mt-3' : 'row mt-5'}>
-            <div className={props.mobile ? '' : 'col-sm-2 col-md-2'}>
+        <div className='row mt-3 mt-md-5'>
+            <div className='col-12 col-md-2'>
                 <h2>최근 후기: </h2>
             </div>
-            <div className='col-sm-10 col-md-10'>
+            <div className='col-12 col-md-10'>
                 {props.reviews.length > 0 ?
                     <>
                         {props.reviews.slice(0, 3).map(eachReview => (
@@ -82,7 +82,7 @@ export const LatestReviews: React.FC<{
                             </div>
                         ))}
 
-                        <div className='m-3'>
+                        <div className='col-12'>
                             <Link type='button' className='btn main-color btn-md text-white'
                                 to={`/reviewlist/${props.workoutId}`}>
                                 전체 후기보기.

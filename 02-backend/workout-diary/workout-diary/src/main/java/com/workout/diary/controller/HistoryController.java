@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin(origins = {"https://localhost:3000", "https://jane-workout.duckdns.org"})
 @RestController
 @RequestMapping("/api/histories")
 public class HistoryController {

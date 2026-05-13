@@ -21,18 +21,6 @@
     background-color: #BDB5D5;
 }
 
-.col-image-left {
-    background-image: url("./Images/PublicImages/image-1.jpg");
-    background-size: cover;
-    background-position: bottom;
-    filter: grayscale(50%);
-    height: 25em !important;
-}
-
-.col-image-right {
-    background-image: url("./Images/PublicImages/image-3.png");
-    height: 25em !important;
-}
 
 .lost-image {
     background-image: url("./Images/PublicImages/image-4.png");

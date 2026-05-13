@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin(origins = {"https://localhost:3000", "https://jane-workout.duckdns.org"})
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {

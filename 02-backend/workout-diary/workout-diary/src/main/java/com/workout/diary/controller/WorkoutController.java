@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin(origins = {"https://localhost:3000", "https://jane-workout.duckdns.org"})
 @RestController
 @RequestMapping("/api/workouts")
 public class WorkoutController {
@@ -68,10 +68,4 @@ public class WorkoutController {
         workoutService.cancelWorkout(userEmail, workoutId);
     }
 
-    @PutMapping("/secure/extend/days")
-    public void extendDays(@AuthenticationPrincipal Jwt jwt,
-                           @RequestParam Long workoutId) throws Exception {
-        String userEmail = jwt.getClaim("https://exercise-library.com/email");
-        workoutService.extendDays(userEmail, workoutId);
-    }
 }

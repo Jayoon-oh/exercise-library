@@ -13,6 +13,10 @@ export const TodayRoutineSummary = () => {
     const [routine, setRoutine] = useState<UserSummary | null>(null);
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            setIsLoading(false);
+            return;
+        }
         const fetchRoutine = async () => {
             const token = await getAccessTokenSilently();
             const baseUrl: string = `${process.env.REACT_APP_API}/summary/secure/user-summary`;
