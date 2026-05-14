@@ -71,7 +71,7 @@
 ---
  
 ## 🗄 DB 테이블 구조
-<img width="700" alt="Image" src="https://github.com/user-attachments/assets/dda139c7-e520-4be4-87a6-ab106f5d226e" />
+<img width="700" alt="Image" src="https://github.com/user-attachments/assets/c2907863-7bb8-40c5-a106-8ec4b14697a7" />
  
 ---
  
