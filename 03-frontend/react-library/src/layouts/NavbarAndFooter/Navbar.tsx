@@ -5,6 +5,8 @@ import { useAuth0 } from "@auth0/auth0-react"
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { UserSummaryModal } from "./components/UserSummaryModal";
 import UserSummary from "../../models/UserSummary";
+import { NotificationBell } from "./components/NotificationBell";
+import { ProfileAvatar } from "./components/ProfileAvatar";
 
 export const Navbar = () => {
 
@@ -90,27 +92,14 @@ export const Navbar = () => {
         <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
             <div className='container-fluid'>
                 <span className='navbar-brand'>Gym rat 🏋️‍♀️</span>
-                
+
                 {/* Mobile UI */}
                 {isAuthenticated && (
                     <div className='d-flex align-items-center ms-auto me-2 d-lg-none'>
-                        <div style={{ position: 'relative', marginRight: '12px' }}>
-                            <span onClick={fetchUserSummary} style={{ fontSize: '20px', cursor: 'pointer' }}>🔔</span>
-                            {unreadCount > 0 && (
-                                <span style={{
-                                    position: 'absolute', top: '-4px', right: '-4px',
-                                    background: 'red', borderRadius: '50%',
-                                    width: '16px', height: '16px', fontSize: '10px',
-                                    color: 'white', display: 'flex',
-                                    alignItems: 'center', justifyContent: 'center'
-                                }}>{unreadCount}</span>
-                            )}
+                        <div className="me-3">
+                            <NotificationBell unreadCount={unreadCount} onClick={fetchUserSummary} />
                         </div>
-                        <img src={user?.picture} alt="Profile"
-                            className="rounded-circle" width="36"
-                            style={{ cursor: 'pointer' }}
-                            onClick={fetchUserSummary}
-                        />
+                        <ProfileAvatar url={user?.picture} onClick={fetchUserSummary} />
                     </div>
                 )}
 
@@ -153,37 +142,12 @@ export const Navbar = () => {
                                     </li>
                                 )}
                                 {/* Desktop UI message notification */}
-                                <li className='nav-item ms-2 d-none d-lg-block' style={{ position: 'relative' }}>
-                                    <span onClick={fetchUserSummary} style={{ fontSize: '20px', cursor: 'pointer' }}>🔔</span>
-                                    {unreadCount > 0 && (
-                                        <span style={{
-                                            position: 'absolute',
-                                            top: '-4px',
-                                            right: '-4px',
-                                            background: 'red',
-                                            borderRadius: '50%',
-                                            width: '16px',
-                                            height: '16px',
-                                            fontSize: '10px',
-                                            color: 'white',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}>
-                                            {unreadCount}
-                                        </span>
-                                    )}
+                                <li className='nav-item ms-2 d-none d-lg-block'>
+                                    <NotificationBell unreadCount={unreadCount} onClick={fetchUserSummary} />
                                 </li>
                                 {/* profile img */}
                                 <li className='nav-item ms-2 d-none d-lg-block'>
-                                    <img
-                                        src={user?.picture}
-                                        alt="Profile"
-                                        className="rounded-circle me-3"
-                                        width="36"
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={fetchUserSummary}
-                                    />
+                                    <ProfileAvatar url={user?.picture} onClick={fetchUserSummary} />
                                 </li>
 
                                 {showModal && (

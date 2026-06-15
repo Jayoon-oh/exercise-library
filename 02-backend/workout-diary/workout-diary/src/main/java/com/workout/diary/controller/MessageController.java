@@ -1,6 +1,7 @@
 package com.workout.diary.controller;
 
 import com.workout.diary.entity.Message;
+import com.workout.diary.repository.UserProfileRepository;
 import com.workout.diary.requestmodels.AdminQuestionResponse;
 import com.workout.diary.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;

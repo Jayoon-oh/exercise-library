@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { Carousel } from "./components/Carousel"
-import { ExploreTopWorkouts } from "./components/ExploreTopWorkouts"
+import { MainHeroBanner } from "./components/MainHeroBanner"
 import { TodayRoutineSummary } from "./components/TodayRoutineSummary"
 import { WeeklyProgress } from "./components/WeeklyProgress"
 import { RecentHistory } from "./components/RecentHistory"
@@ -18,7 +18,7 @@ export const HomePage = () => {
                 </div>
             ) : (
                 <>
-                    <ExploreTopWorkouts />
+                    <MainHeroBanner />
                     <Carousel />
                 </>
             )}

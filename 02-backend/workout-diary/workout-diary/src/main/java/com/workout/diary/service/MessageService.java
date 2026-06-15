@@ -1,7 +1,9 @@
 package com.workout.diary.service;
 
+import com.workout.diary.entity.UserProfile;
 import com.workout.diary.repository.MessageRepository;
 import com.workout.diary.entity.Message;
+import com.workout.diary.repository.UserProfileRepository;
 import com.workout.diary.requestmodels.AdminQuestionResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,14 @@ import java.util.Optional;
 public class MessageService {
 
     private MessageRepository messageRepository;
+    private UserProfileRepository userProfileRepository;
+    private UserProfile userprofile;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository,
+                          UserProfileRepository userProfileRepository) {
         this.messageRepository = messageRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     public void deleteMessage(String userEmail, Long messageId) throws Exception {
@@ -79,6 +85,11 @@ public class MessageService {
 
     // Count messages have not read
     public int getUnreadMessageCount(String userEmail) {
+        if (!userProfileRepository.existsByUserEmail(userEmail)) {
+            UserProfile profile = new UserProfile();
+            profile.setUserEmail(userEmail);
+            userProfileRepository.save(profile);
+        }
         return messageRepository.countByUserEmailAndClosedAndIsRead(userEmail, true, false);
     }
 
