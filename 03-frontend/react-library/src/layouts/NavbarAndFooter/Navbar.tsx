@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { Link, NavLink } from "react-router-dom"
 
 import { SpinnerLoading } from "../Utils/SpinnerLoading"
 import { useAuth0 } from "@auth0/auth0-react"
@@ -91,7 +91,9 @@ export const Navbar = () => {
     return (
         <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
             <div className='container-fluid'>
-                <span className='navbar-brand'>Gym rat 🏋️‍♀️</span>
+                <Link className='navbar-brand' to='/home'>
+                    Gym rat 🏋️‍♀️
+                </Link>
 
                 {/* Mobile UI */}
                 {isAuthenticated && (
@@ -114,9 +116,7 @@ export const Navbar = () => {
                 <div className='collapse navbar-collapse' id='navbarNavDropdown'>
                     {/* left side of Navbar */}
                     <ul className='navbar-nav'>
-                        <li className='nav-item'>
-                            <NavLink className='nav-link' to='/home'>홈</NavLink>
-                        </li>
+
                         <li className='nav-item'>
                             <NavLink className='nav-link' to='/search'>검색</NavLink>
                         </li>

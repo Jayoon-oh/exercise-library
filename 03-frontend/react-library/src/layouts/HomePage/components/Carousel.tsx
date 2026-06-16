@@ -50,7 +50,7 @@ export const Carousel = () => {
         })
     }, []);
 
-    const chunckWorkouts = (array: WorkoutModel[], size: number) => {
+    const chunkWorkouts = (array: WorkoutModel[], size: number) => {
         const chuncked = [];
         for (let i = 0; i < array.length; i += size) {
             chuncked.push(array.slice(i, i + size));
@@ -58,7 +58,7 @@ export const Carousel = () => {
         return chuncked;
     };
 
-    const workoutChuncks = chunckWorkouts(workouts, 3);
+    const workoutChunks = chunkWorkouts(workouts, 3);
 
     if (isLoading) {
         return (
@@ -75,18 +75,24 @@ export const Carousel = () => {
     }
 
     return (
-        <div className='container mt-5' style={{ height: 550 }}>
-            <div className='homepage-carousel-title'>
-                <h3>내일 아침 근육통이 기다려지는 루틴을 찾아보세요 💪</h3>
-            </div>
-            <div id='carouselExampleControls' className='carousel carousel-dark slide mt-5
-            d-none d-lg-block' data-bs-interval='false'>
+        <div className='container my-4 my-md-5' style={{ minHeight: 550, height: 'auto' }}>
 
-                {/* Desktop */}
+            {/* title */}
+            <div className='d-flex justify-content-between align-items-end border-bottom pb-3 mb-4'>
+                <div className='homepage-carousel-title'>
+                    <h3 className='fs-5 fs-md-3 fw-bold mb-0'>내일 아침 근육통이 기다려지는 루틴 💪</h3>
+                </div>
+                <Link className='btn btn-outline-secondary btn-sm d-none d-md-block' to='/search'>
+                    더 보기 →
+                </Link>
+            </div>
+
+            {/* Desktop */}
+            <div id='carouselDesktop' className='carousel carousel-dark slide mt-4 d-none d-lg-block' data-bs-interval='false'>
                 <div className='carousel-inner'>
-                    {workoutChuncks.map((chunk, index) => (
-                        <div className={`carousel-item ${index == 0 ? 'active' : ''}`} key={index}>
-                            <div className="row d-flex justify-content-center align-items-center">
+                    {workoutChunks.map((chunk, index) => (
+                        <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={`desktop-${index}`}>
+                            <div className='row justify-content-center align-items-center'>
                                 {chunk.map(workout => (
                                     <ReturnWorkout workout={workout} key={workout.id} />
                                 ))}
@@ -94,28 +100,46 @@ export const Carousel = () => {
                         </div>
                     ))}
                 </div>
-
-                <button className='carousel-control-prev' type='button'
-                    data-bs-target='#carouselExampleControls' data-bs-slide='prev'>
+                <button className='carousel-control-prev' type='button' data-bs-target='#carouselDesktop' data-bs-slide='prev'>
                     <span className='carousel-control-prev-icon' aria-hidden='true'></span>
                     <span className='visually-hidden'>이전</span>
                 </button>
-                <button className='carousel-control-next' type='button'
-                    data-bs-target='#carouselExampleControls' data-bs-slide='next'>
+                <button className='carousel-control-next' type='button' data-bs-target='#carouselDesktop' data-bs-slide='next'>
                     <span className='carousel-control-next-icon' aria-hidden='true'></span>
                     <span className='visually-hidden'>다음</span>
                 </button>
             </div>
 
             {/* Mobile */}
-            <div className='d-lg-none mt-3'>
-                <div className='row d-flex justify-content-center align-items-center'>
-                    <ReturnWorkout workout={workouts[0]} key={workouts[0].id} />
+            <div id='carouselMobile' className='carousel carousel-dark slide mt-4 d-lg-none' data-bs-interval='false'>
+                <div className='carousel-inner'>
+                    {workouts.map((workout, index) => (
+                        <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={`mobile-${index}`}>
+                            <div className='row justify-content-center align-items-center'>
+                                <div className='col-11 col-sm-6 d-flex justify-content-center text-center'>
+                                    <ReturnWorkout workout={workout} key={workout.id} />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
+                <button className='carousel-control-prev' type='button' data-bs-target='#carouselMobile' data-bs-slide='prev'>
+                    <span className='carousel-control-prev-icon' aria-hidden='true'></span>
+                    <span className='visually-hidden'>이전</span>
+                </button>
+                <button className='carousel-control-next' type='button' data-bs-target='#carouselMobile' data-bs-slide='next'>
+                    <span className='carousel-control-next-icon' aria-hidden='true'></span>
+                    <span className='visually-hidden'>다음</span>
+                </button>
             </div>
-            <div className='homepage-carousel-title mt-3'>
-                <Link className='btn btn-outline-secondary btn-lg' to='/search'>더 보기</Link>
+
+            {/* more button for Mobile */}
+            <div className='d-grid gap-2 mt-4 d-md-none'>
+                <Link className='btn btn-outline-dark py-2' to='/search'>
+                    다른 운동 더 보기
+                </Link>
             </div>
+
         </div>
     )
 }
