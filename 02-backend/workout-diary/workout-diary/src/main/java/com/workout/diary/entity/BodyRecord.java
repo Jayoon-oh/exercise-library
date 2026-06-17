@@ -3,6 +3,8 @@ package com.workout.diary.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "body_record")
 @Data
@@ -10,7 +12,7 @@ public class BodyRecord {
 
     public BodyRecord() {}
 
-    public BodyRecord(String userEmail, double weight, double height, String date) {
+    public BodyRecord(String userEmail, double weight, double height, LocalDate date) {
         this.userEmail = userEmail;
         this.weight = weight;
         this.height = height;
@@ -32,7 +34,7 @@ public class BodyRecord {
     private Double height;
 
     @Column(name = "recorded_date")
-    private String recordedDate;
+    private LocalDate recordedDate;
 
     @Column(name = "bmi")
     private Double bmi;

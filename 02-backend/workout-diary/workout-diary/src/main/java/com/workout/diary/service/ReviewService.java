@@ -45,7 +45,7 @@ public class ReviewService {
         }
 
         // 4. 날짜 설정 및 저장
-        review.setDate(Date.valueOf(LocalDate.now()));
+        review.setDate(LocalDate.now());
         reviewRepository.save(review);
         pointsService.addPoints(userEmail, PointsConstants.REVIEW_WRITE_POINTS, PointsConstants.REVIEW_WRITE_MSG);
     }

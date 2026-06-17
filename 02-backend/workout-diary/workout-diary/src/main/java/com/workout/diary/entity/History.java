@@ -3,6 +3,8 @@ package com.workout.diary.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "workout_history")
 @Data
@@ -10,8 +12,8 @@ public class History {
 
     public History (){}
 
-    public History(String userEmail, String startDate, String completedDate,
-                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetReps, Integer targetSets,  String muscleGroup, String workoutMemo) {
+    public History(String userEmail, LocalDate startDate, LocalDate completedDate,
+                   String title, String source, String description, String img, Integer actualReps, Integer actualSets, Integer targetReps, Integer targetSets, String muscleGroup, String workoutMemo) {
         this.userEmail = userEmail;
         this.startDate = startDate;
         this.completedDate = completedDate;
@@ -36,10 +38,10 @@ public class History {
     private String userEmail;
 
     @Column(name = "start_date")
-    private String startDate;
+    private LocalDate startDate;
 
     @Column(name = "completed_date")
-    private String completedDate;
+    private LocalDate completedDate;
 
     @Column(name = "title")
     private String title;

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name="points_history")
 @Data
@@ -32,5 +34,5 @@ public class PointsHistory {
 
     @Column(name = "created_date")
     @CreationTimestamp
-    private String createdDate;
+    private LocalDate createdDate;
 }

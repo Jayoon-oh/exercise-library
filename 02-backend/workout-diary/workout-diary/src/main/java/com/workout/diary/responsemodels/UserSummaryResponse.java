@@ -3,6 +3,7 @@ package com.workout.diary.responsemodels;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -29,10 +30,10 @@ public class UserSummaryResponse {
     private List<TodayWorkout> todayWorkouts;
     private int todayRoutineCount;
     private List<String> recentMemos;
-    private List<String> recentMemoDates;
+    private List<LocalDate> recentMemoDates;
 
     public UserSummaryResponse(int unreadMessageCount, int points, List<TodayWorkout> todayWorkouts, int todayRoutineCount,
-                               List<String> recentMemos, List<String> recentMemoDates) {
+                               List<String> recentMemos, List<LocalDate> recentMemoDates) {
         this.unreadMessageCount = unreadMessageCount;
         this.points = points;
         this.todayWorkouts = todayWorkouts;

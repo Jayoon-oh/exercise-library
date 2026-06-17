@@ -46,7 +46,7 @@ public class UserProfileService {
     // add Body Record with BMI
     public void addBodyRecord(String userEmail, BodyRecordRequest bodyRecordRequest) {
         BodyRecord bodyRecord = new BodyRecord(userEmail,bodyRecordRequest.getWeight(), bodyRecordRequest.getHeight(),
-                LocalDate.now().toString());
+                LocalDate.now());
 
         // Calculate BMI
         double heightInMeters = bodyRecordRequest.getHeight()/100;

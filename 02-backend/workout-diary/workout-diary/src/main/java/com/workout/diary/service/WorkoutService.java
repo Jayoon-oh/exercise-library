@@ -7,11 +7,14 @@ import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.requestmodels.CompleteWorkoutRequest;
 import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
+import exception.AlreadyActivatedException;
+import exception.WorkoutNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Transactional
 public class WorkoutService {
+    private static final int ROUTINE_DURATION_DAYS = 7;
 
     private WorkoutRepository workoutRepository;
     private ActiveRoutineRepository activeRoutineRepository;
@@ -35,19 +39,24 @@ public class WorkoutService {
         this.pointsService = pointsService;
     }
 
-    public Workout activeWorkout (String userEmail, Long workoutId, int maxSets, int maxReps) throws Exception {
+    public Workout activeWorkout (String userEmail, Long workoutId, int maxSets, int maxReps) {
+
         Optional<Workout> workout = workoutRepository.findById(workoutId);
 
-        ActiveRoutine validateActive = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
+        ActiveRoutine existingRoutine = activeRoutineRepository.findByUserEmailAndWorkoutId(userEmail, workoutId);
 
-        if (!workout.isPresent() || validateActive != null) {
-            throw new Exception("Workout doesn't exist or already Activated by user");
+        if (!workout.isPresent()) {
+            throw new WorkoutNotFoundException("Workout doesn't exist");
+        }
+
+        if ( existingRoutine != null) {
+            throw new AlreadyActivatedException("Workout is already Activated by user");
         }
 
         ActiveRoutine activeRoutine = new ActiveRoutine(
                 userEmail,
-                LocalDate.now().toString(),
-                LocalDate.now().plusDays(7).toString(),
+                LocalDate.now(),
+                LocalDate.now().plusDays(ROUTINE_DURATION_DAYS),
                 workout.get().getId(),
                 maxSets,
                 maxReps
@@ -86,17 +95,16 @@ public class WorkoutService {
                         .filter(x -> x.getWorkoutId() == workout.getId()).findFirst();
 
                 if (activeRoutine.isPresent()) {
-                    Date d1 = sdf.parse(activeRoutine.get().getEndDate());
-                    Date d2 = sdf.parse(LocalDate.now().toString());
+                    LocalDate endDate = activeRoutine.get().getEndDate();
+                    LocalDate today = LocalDate.now();
 
                     TimeUnit time = TimeUnit.DAYS;
 
-                    long difference_In_time = time.convert(d1.getTime() - d2.getTime(),
-                            TimeUnit.MILLISECONDS);
+                    long daysLeft = ChronoUnit.DAYS.between(today, endDate);
 
                     shelfCurrentActivitiesResponses.add(new ShelfCurrentActivitiesResponse(
                             workout,
-                            (int) difference_In_time,
+                            (int)daysLeft,
                             activeRoutine.get().getMaxSets(),
                             activeRoutine.get().getMaxReps()
 
@@ -123,7 +131,7 @@ public class WorkoutService {
                 History history = new History(
                         userEmail,
                         routine.getStartDate(),
-                        LocalDate.now().toString(),
+                        LocalDate.now(),
                         workout.getTitle(),
                         workout.getSource(),
                         workout.getDescription(),

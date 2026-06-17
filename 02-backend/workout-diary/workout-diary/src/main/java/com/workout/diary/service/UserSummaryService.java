@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,7 +80,7 @@ public class UserSummaryService {
                 .map(History::getWorkoutMemo)
                 .collect(Collectors.toList());
 
-        List<String> recentMemoDate = recentHistory.stream()
+        List<LocalDate> recentMemoDate = recentHistory.stream()
                 .map(History::getCompletedDate)
                 .collect(Collectors.toList());
 
