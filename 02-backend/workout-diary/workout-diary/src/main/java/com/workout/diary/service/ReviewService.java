@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -45,7 +46,7 @@ public class ReviewService {
         }
 
         // 4. 날짜 설정 및 저장
-        review.setDate(LocalDate.now());
+        review.setDate(LocalDateTime.now());
         reviewRepository.save(review);
         pointsService.addPoints(userEmail, PointsConstants.REVIEW_WRITE_POINTS, PointsConstants.REVIEW_WRITE_MSG);
     }

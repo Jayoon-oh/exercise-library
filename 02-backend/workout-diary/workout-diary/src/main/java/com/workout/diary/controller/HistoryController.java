@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -49,13 +50,13 @@ public class HistoryController {
     }
 
     @GetMapping("/secure/WorkoutCalendar")
-    public List<History> getWorkoutHistory(@AuthenticationPrincipal Jwt jwt, @RequestParam String completedDate) {
+    public List<History> getWorkoutHistory(@AuthenticationPrincipal Jwt jwt, @RequestParam LocalDate completedDate) {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return historyService.getWorkoutHistory(userEmail, completedDate);
     }
 
     @GetMapping("/secure/WorkoutCalendar/Month")
-    public List<String> getWorkoutHistoryByRange(@AuthenticationPrincipal Jwt jwt, @RequestParam String startDate, @RequestParam String endDate) {
+    public List<String> getWorkoutHistoryByRange(@AuthenticationPrincipal Jwt jwt, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
         return historyService.getWorkoutHistoryByMonth(userEmail, startDate, endDate);
     }

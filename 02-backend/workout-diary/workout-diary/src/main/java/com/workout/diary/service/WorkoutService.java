@@ -7,6 +7,7 @@ import com.workout.diary.entity.History;
 import com.workout.diary.entity.Workout;
 import com.workout.diary.requestmodels.CompleteWorkoutRequest;
 import com.workout.diary.responsemodels.ShelfCurrentActivitiesResponse;
+import exception.ActivatedRoutineNotFoundException;
 import exception.AlreadyActivatedException;
 import exception.WorkoutNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -114,19 +114,30 @@ public class WorkoutService {
             return shelfCurrentActivitiesResponses;
         }
 
-        public void completeWorkouts(String userEmail, List<Long> workoutIds, String memo) throws Exception {
+        public void completeWorkouts(String userEmail, List<Long> workoutIds, String memo, Integer actualReps, Integer actualSets) {
             List<ActiveRoutine> activeRoutines = activeRoutineRepository.findByUserEmailAndWorkoutIds(userEmail, workoutIds);
 
             if (activeRoutines.isEmpty()) {
-                throw new Exception("Cannot find ActivatedRoutine");
+                throw new ActivatedRoutineNotFoundException("Cannot find ActivatedRoutine");
             }
 
             List<History> historyList = new ArrayList<>();
 
+            List<Long> ids = activeRoutines.stream()
+                    .map(routine -> routine.getWorkoutId())
+                    .collect(Collectors.toList());
+
+            Map<Long, Workout> workoutMap = workoutRepository.findAllById(ids)
+                    .stream()
+                    .collect(Collectors.toMap(Workout::getId, w -> w));
+
             for (ActiveRoutine routine : activeRoutines) {
                 // loading workoutIds
-                Workout workout = workoutRepository.findById(routine.getWorkoutId())
-                        .orElseThrow(() -> new Exception("Cannot find WorkoutId. ID: " + routine.getWorkoutId()));
+                Workout workout = workoutMap.get(routine.getWorkoutId());
+
+                if (workout == null) {
+                    throw new WorkoutNotFoundException("Cannot find workoutId: " + routine.getWorkoutId());
+                }
 
                 History history = new History(
                         userEmail,
@@ -136,8 +147,8 @@ public class WorkoutService {
                         workout.getSource(),
                         workout.getDescription(),
                         workout.getImg(),
-                        routine.getMaxReps(),
-                        routine.getMaxSets(),
+                        actualReps,
+                        actualSets,
                         routine.getMaxReps(),
                         routine.getMaxSets(),
                         workout.getMuscleGroup(),

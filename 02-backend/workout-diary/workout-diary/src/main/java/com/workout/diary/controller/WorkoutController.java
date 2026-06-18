@@ -56,9 +56,10 @@ public class WorkoutController {
 
     @PutMapping("/secure/complete")
     public void completeWorkouts(@AuthenticationPrincipal Jwt jwt,
-                                 @RequestBody CompleteWorkoutRequest request) throws Exception {
+                                 @RequestBody CompleteWorkoutRequest request
+                                 ) throws Exception {
         String userEmail = jwt.getClaim("https://exercise-library.com/email");
-        workoutService.completeWorkouts(userEmail, request.getWorkoutIds(), request.getMemo());
+        workoutService.completeWorkouts(userEmail, request.getWorkoutIds(), request.getMemo(),  request.getActualReps(), request.getActualSets());
     }
 
     @PutMapping("/secure/cancel")

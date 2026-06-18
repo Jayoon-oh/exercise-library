@@ -33,9 +33,10 @@ public class HistoryService {
     // 당월 운동 수
     public int getThisMonthCount(String userEmail) {
         // 1. thisMonth 만들고
-        String thisMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        LocalDate start = LocalDate.now().withDayOfMonth(1);
+        LocalDate end = start.plusMonths(1).minusDays(1);
         // 2. repository 호출하고
-        int thisMonthCount = historyRepository.countByUserEmailAndCompletedDateLike(userEmail, thisMonth + "%");
+        int thisMonthCount = historyRepository.countByUserEmailAndCompletedDateBetween(userEmail, start, end);
         // 3. return
         return thisMonthCount;
     }
@@ -44,10 +45,10 @@ public class HistoryService {
         List<Integer> result = new ArrayList<>();
 
         for (int i = 0; i < 6; i++) {
-            String month = LocalDate.now().minusMonths(i)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM"));
+            LocalDate start = LocalDate.now().minusMonths(i).withDayOfMonth(1);
+            LocalDate end = start.plusMonths(1).minusDays(1);
 
-            int count = historyRepository.countByUserEmailAndCompletedDateLike(userEmail, month + "%");
+            int count = historyRepository.countByUserEmailAndCompletedDateBetween(userEmail, start , end);
             result.add(count);
         }
         return result;
@@ -66,12 +67,12 @@ public class HistoryService {
     }
 
     //workout list for specific Date on Calendar
-    public List<History> getWorkoutHistory(String userEmail, String completedDate) {
+    public List<History> getWorkoutHistory(String userEmail, LocalDate completedDate) {
         return historyRepository.findByUserEmailAndCompletedDate(userEmail, completedDate);
     }
 
     // completed workout list per month (for checking Calendar ex.Apr, May)
-    public List<String> getWorkoutHistoryByMonth(String userEmail, String startDate, String endDate) {
+    public List<String> getWorkoutHistoryByMonth(String userEmail, LocalDate startDate, LocalDate endDate) {
         return historyRepository.findByCompletedDatesByUserEmailAndMonth(userEmail, startDate, endDate);
     }
 }

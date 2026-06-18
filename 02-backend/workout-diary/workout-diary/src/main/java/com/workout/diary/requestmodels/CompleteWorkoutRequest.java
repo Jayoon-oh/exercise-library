@@ -9,5 +9,9 @@ public class CompleteWorkoutRequest {
 
     private List<Long> workoutIds;
 
+    private int actualReps;
+
+    private int actualSets;
+
     private String memo;
 }
