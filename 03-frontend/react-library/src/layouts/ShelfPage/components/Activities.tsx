@@ -80,7 +80,7 @@ export const Activies = () => {
         setActivate(!activate);
     }
 
-    async function completeWorkouts(memo: string) {
+    async function completeWorkouts(memo: string, actualReps: number, actualSets: number) {
         if (checkedIds.length === 0) {
             alert("완료할 운동을 선택해주세요.")
             return;
@@ -93,7 +93,7 @@ export const Activies = () => {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ workoutIds: checkedIds, memo: memo })
+            body: JSON.stringify({ workoutIds: checkedIds, memo: memo, actualReps: actualReps, actualSets: actualSets })
         };
 
         const response = await fetch(url, requestOptions);
@@ -121,6 +121,10 @@ export const Activies = () => {
         }
     };
 
+    const selectedActivity = checkedIds.length === 1
+        ? shelfCurrentActivities.find(a => a.workout.id === checkedIds[0])
+        : undefined;
+
     return (
         <div className='container'>
             {shelfCurrentActivities.length > 0 ? (
@@ -139,13 +143,18 @@ export const Activies = () => {
                                     }}
                                 />
                             )}
+
+
+
                             {showAddMemo && (
                                 <MemoModal
                                     onClose={() => setShowAddMemo(false)}
-                                    onComplete={(memo) => {
-                                        completeWorkouts(memo);
+                                    onComplete={(memo, actualReps, actualSets) => {
+                                        completeWorkouts(memo, actualReps, actualSets);
                                         setShowAddMemo(false);
                                     }}
+                                    targetReps={selectedActivity?.maxReps}
+                                    targetSets={selectedActivity?.maxSets}
                                 />
                             )}
                         </div>

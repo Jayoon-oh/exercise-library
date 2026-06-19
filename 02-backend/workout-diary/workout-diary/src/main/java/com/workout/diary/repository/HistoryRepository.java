@@ -26,7 +26,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     // completed workout list per month (for checking Calendar ex.Apr, May)
     @Query("SELECT DISTINCT h.completedDate FROM History h WHERE h.userEmail = :userEmail AND h.completedDate BETWEEN :startDate AND :endDate")
-    List<String> findByCompletedDatesByUserEmailAndMonth(@Param("userEmail") String userEmail, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<LocalDate> findByCompletedDatesByUserEmailAndMonth(@Param("userEmail") String userEmail, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     // recent memo at TodayRoutineSummary
     @Query("SELECT h FROM History h WHERE h.userEmail = :userEmail AND h.workoutMemo IS NOT NULL ORDER BY h.completedDate DESC")

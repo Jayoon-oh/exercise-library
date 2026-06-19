@@ -2,14 +2,19 @@ import { useState } from "react";
 
 interface Props {
     onClose: () => void;
-    onComplete: (memo: string) => void;
+    onComplete: (memo: string, actualReps: number, actualSets: number) => void;
+    targetReps?: number;
+    targetSets?: number;
 }
 
-export const MemoModal: React.FC<Props> = ({ onClose, onComplete }) => {
+export const MemoModal: React.FC<Props> = ({ onClose, onComplete, targetReps, targetSets }) => {
     const [inputMemo, setInputMemo] = useState('');
+    const [inputSets, setInputSets] = useState(targetSets ?? '');
+    const [inputReps, setInputReps] = useState(targetReps ?? '');
+
 
     const addMemo = () => {
-        onComplete(inputMemo);
+        onComplete(inputMemo, Number(inputReps), Number(inputSets));
         onClose();
     }
 
@@ -29,6 +34,24 @@ export const MemoModal: React.FC<Props> = ({ onClose, onComplete }) => {
                 </div>
 
                 <hr className="mb-3" />
+
+                {/* input actualSets */}
+                <input
+                    type="number"
+                    className="form-control"
+                    placeholder="세트 수"
+                    value={inputSets}
+                    onChange={(e) => setInputSets(e.target.value)}
+                />
+
+                {/* input actualReps */}
+                <input
+                    type="number"
+                    className="form-control"
+                    placeholder="수행 횟수"
+                    value={inputReps}
+                    onChange={(e) => setInputReps(e.target.value)}
+                />
 
                 {/* input memo */}
                 <textarea
